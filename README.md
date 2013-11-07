@@ -8,9 +8,6 @@
 * [Virtualbox](https://www.virtualbox.org/wiki/Downloads) is installed
 * `Python 2.4+` is in `$PATH` and has the `simplejson` module
 
-**Note**: To install the `simplejson` module in `Python < 2.6` run the following:  
-`ansible vagrant -i provisioning/hosts_vagrant -u vagrant --sudo -m raw -a "yum install -y python-simplejson"`
-
 ### Download the SUPPORT customized Vagrant box:
 
 **Note**: Vagrant won't untar the SUPPORT box file currently, do the following steps manually:
@@ -25,6 +22,9 @@ vagrant-centos59-x86_64-SUPPORT/
 $ vagrant box list
 #=> vagrant-centos59-x86_64-SUPPORT
 ```
+
+**Note**: To install the `simplejson` module on Python 2.4.3 on the SUPPORT VM run the following:  
+`ansible vagrant -i provisioning/hosts_vagrant -u vagrant --sudo -m raw -a "yum install -y python-simplejson"`
 
 ### Develop / Test the Ansible Provisioning Playbook:
 
