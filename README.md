@@ -4,9 +4,16 @@
 
 * No root access
 * sudo from a non-privileged user account (e.g., `vagrant`) to `sysadmin` account
-* `vagrant.vm` in your `/etc/hosts` maps to `33.33.33.10`
+* `Python 2.4+` is in `$PATH` and has the `simplejson` module (ansible requirements for your remote servers)
+
+---
+
+# Development / Testing with Vagrant:
+
+### Vagrant Configuration Assumptions:
+
+* `vagrant.vm` maps to `33.33.33.10` (in your `/etc/hosts` file)
 * [Virtualbox](https://www.virtualbox.org/wiki/Downloads) is installed
-* `Python 2.4+` is in `$PATH` and has the `simplejson` module
 
 ### Download the SUPPORT customized Vagrant box:
 
@@ -32,5 +39,15 @@ $ vagrant box list
 # Start the vagrant VM:
 $ vagrant up
 # Run the ansible playbook:
+$ vagrant provision
+```
+
+### Repeat as Needed:
+
+```bash
+$ vagrant destroy
+$ vagrant up
+# Before your first provision
+$ ansible vagrant -i provisioning/hosts_vagrant -u vagrant --sudo -m raw -a "yum install -y python-simplejson"
 $ vagrant provision
 ```
