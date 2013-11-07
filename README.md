@@ -10,8 +10,9 @@
 
 ### Vagrant Configuration Assumptions:
 
-* `vagrant.vm` maps to `33.33.33.10` (in your `/etc/hosts` file)
-* [Virtualbox](https://www.virtualbox.org/wiki/Downloads) is installed
+1. [Virtualbox](https://www.virtualbox.org/wiki/Downloads) is installed
+2. [Vagrant](http://vagrantup.com/) is installed
+3. `vagrant.vm` maps to `33.33.33.10` (in your `/etc/hosts` file)
 
 ### Download the SUPPORT customized Vagrant box:
 
@@ -36,16 +37,10 @@ $ vagrant box list
 ```bash
 # Start the vagrant VM:
 $ vagrant up
-# Run the ansible playbook:
-$ vagrant provision
-```
-
-### Repeat as Needed:
-
-```bash
-$ vagrant destroy
-$ vagrant up
-# Before your first provision
+# Fails due to missing python-simplejson on CentOS 5.9 default Python 2.4.3:
 $ ansible vagrant -i provisioning/hosts_vagrant -u vagrant --sudo -m raw -a "yum install -y python-simplejson"
+# Run the ansible playbook (initially & as often as needed):
 $ vagrant provision
+# Destroy as needed and repeat from `vagrant up`:
+$ vagrant destroy
 ```
