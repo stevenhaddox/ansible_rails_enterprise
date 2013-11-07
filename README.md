@@ -6,8 +6,6 @@
 * sudo from a non-privileged user account (e.g., `vagrant`) to `sysadmin` account
 * `Python 2.4+` is in `$PATH` and has the `simplejson` module (ansible requirements for your remote servers)
 
----
-
 # Development / Testing with Vagrant:
 
 ### Vagrant Configuration Assumptions:
