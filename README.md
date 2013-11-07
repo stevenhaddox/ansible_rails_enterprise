@@ -9,7 +9,7 @@
 * `Python 2.4+` is in `$PATH` and has the `simplejson` module
 
 **Note**: To install the `simplejson` module in `Python < 2.6` run the following:  
-`ansible vagrant -u vagrant --sudo -m raw -a "yum install -y python-simplejson"`
+`ansible vagrant -i provisioning/hosts_vagrant -u vagrant --sudo -m raw -a "yum install -y python-simplejson"`
 
 ### Download the SUPPORT customized Vagrant box:
 
