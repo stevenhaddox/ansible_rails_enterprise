@@ -1,0 +1,20 @@
+---
+- hosts: vagrant
+  tasks:
+
+    - name: Check server's alive
+      action: ping
+
+    - action: shell whoami
+      register: whoami
+
+    - name: echo who I am
+      action: command whoami
+
+#    - name: ensure $STOW is defined
+#      lineinfile: destfile=${HOME}/.bashrc regexpr="$export STOW=" line="export STOW=${HOME}/opt/stow" state=present
+#
+#    - name: ensure $STOW is in PATH environment
+#      lineinfile: destfile=${HOME}/.bashrc regexpr="$export PATH=${STOW}/bin:${PATH}" line="export PATH=${STOW}/bin:${PATH}" state=present
+#      notify:
+#        - command: source ${HOME}/.bashrc
