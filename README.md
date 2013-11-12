@@ -2,9 +2,16 @@
 
 ### Environment Assumptions:
 
+##### Control Machine:
+
+* [Ansible](http://www.ansibleworks.com/docs/intro_installation.html) is installed on your `Control Machine`
+
+##### Remote Nodes:
+
 * No root access
 * sudo from a non-privileged user account (e.g., `vagrant`) to `sysadmin` account
 * `Python 2.4+` is in `$PATH` and has the `simplejson` module (ansible requirements for your remote servers)
+* OR `Python 2.6+` is installed and accessible via `$PATH`
 
 # Development / Testing with Vagrant:
 
@@ -35,8 +42,9 @@ $ vagrant box list
 ### Develop / Test the Ansible Provisioning Playbook:
 
 ```bash
+# This will fail on the provisiong step until you bootstrap the server
 $ vagrant up
-# Before your first provision
+# Boostrap the server:
 $ ansible-playbook provisioning/init.yml -i provisioning/hosts/vagrant --user=vagrant --sudo
 # Repeat with each `provisioning/playbook.yml` modification:
 $ vagrant provision
