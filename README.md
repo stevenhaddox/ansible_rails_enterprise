@@ -29,17 +29,16 @@ $ vagrant box list
 #=> vagrant-centos59-x86_64-SUPPORT
 ```
 
-**Note**: To install the `simplejson` module on Python 2.4.3 on the SUPPORT VM run the following:  
-`ansible vagrant -i provisioning/hosts_vagrant -u vagrant --sudo -m raw -a "yum install -y python-simplejson"`
+**Note**: To install the `python-simplejson` module for Python 2.4.3 on the SUPPORT VM run the following playbook:  
+`ansible-playbook provisioning/init.yml -i provisioning/hosts/vagrant --user=vagrant --sudo`
 
 ### Develop / Test the Ansible Provisioning Playbook:
 
 ```bash
-# Start the vagrant VM:
 $ vagrant up
-# Fails due to missing python-simplejson on CentOS 5.9 default Python 2.4.3:
-$ ansible vagrant -i provisioning/hosts_vagrant -u vagrant --sudo -m raw -a "yum install -y python-simplejson"
-# Run the ansible playbook (initially & as often as needed):
+# Before your first provision
+$ ansible-playbook provisioning/init.yml -i provisioning/hosts/vagrant --user=vagrant --sudo
+# Repeat with each `provisioning/playbook.yml` modification:
 $ vagrant provision
 # Destroy as needed and repeat from `vagrant up`:
 $ vagrant destroy

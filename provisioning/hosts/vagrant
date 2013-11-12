@@ -9,7 +9,7 @@
 #   - A hostname/ip can be a member of multiple groups
 
 [vagrant]
-33.33.33.10   ansible_ssh_user=vagrant
+33.33.33.10
 
 [web]
 33.33.33.10

@@ -1,0 +1,10 @@
+---
+- hosts: all
+  tasks:
+
+    - name: Determine username
+      action: shell whoami
+      register: whoami
+
+    - name: Debug which user is running the tasks
+      debug: msg="Logged in as {{ whoami.stdout }}"
