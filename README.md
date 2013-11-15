@@ -42,9 +42,9 @@ $ vagrant box list
 ### Develop / Test the Ansible Provisioning Playbook:
 
 ```bash
-# This will fail on the provisiong step until you bootstrap the server
-$ vagrant up
-# Boostrap the server:
+# --no-provision avoids an error for missing python-simplejson module for ansible
+$ vagrant up --no-provision
+# Boostrap the server to add python-simplejson
 $ ansible-playbook provisioning/init.yml -i provisioning/hosts/vagrant --user=vagrant --sudo
 # Repeat with each `provisioning/playbook.yml` modification:
 $ vagrant provision

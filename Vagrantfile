@@ -9,7 +9,7 @@ Vagrant.configure("2") do |config|
 
   config.vm.provision :ansible do |ansible|
     ansible.verbose        = 'vv' # vv, vvv, false
-    ansible.playbook       = "provisioning/default.yml"
+    ansible.playbook       = "provisioning/site.yml"
     ansible.inventory_path = "provisioning/hosts/vagrant"
     ansible.sudo           = true
     ansible.sudo_user      = "sysadmin"

@@ -1,0 +1,48 @@
+---
+# This playbook deploys the whole infrastructure stack for this site.
+
+#  Uncomment this playbook if you need to debug basic user information
+#- name: Verify who's running commands via debug
+#  hosts: all
+#  sudo: True
+#  sudo_user: ${sysadmin}
+#  roles:
+#    - debug
+
+- name: Initialize all SUPPORT servers
+  hosts: all
+  sudo: True
+  sudo_user: ${sysadmin}
+  roles:
+    - common
+
+
+#- name: Setup the webserver infrastructure
+#  hosts: webservers
+#  sudo_user: ${sysadmin}
+#  user:
+#  vars_prompt:
+#    ssl_passphrase: "Please enter the passphrase for the SSL certificate"
+#  roles:
+#    - web
+#
+#- name: Setup the DB infrastructure
+#  hosts: dbservers
+#  sudo_user: ${sysadmin}
+#  user:
+#  roles:
+#    - db
+#
+#- name: Setup the Ruby environment
+#  hosts: ruby&rails
+#  sudo_user: ${sysadmin}
+#  user:
+#  roles:
+#    - rails
+#
+#- name: Setup the Rails environment
+#  hosts: rails
+#  sudo_user: ${sysadmin}
+#  user:
+#  roles:
+#    - rails
