@@ -1,0 +1,3 @@
+---
+  - name: source bash
+    command: source {{HOME.stdout}}/.bashrc

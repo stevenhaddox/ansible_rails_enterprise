@@ -10,13 +10,24 @@
 - name: Prevent 'changed' status on STOW dir creation
   command: touch {{STOW_PATH}}/.ansible_keep creates={{STOW_PATH}}/.ansible_keep
 
-#- name: ensure $STOW is defined
-#  lineinfile: dest=~/.bashrc state=present backrefs=yes regexp='^export STOW={{STOW_PATH}}' line='export STOW={{STOW_PATH}}'
-#  register: update_bashrc
-
-
-#- name: ensure $STOW is in PATH environment
-#  action: shell echo "Add $STOW to PATH if missing"
-#  lineinfile: destfile=${HOME}/.bashrc regexpr="$export PATH=${STOW}/../bin:${PATH}" line="export PATH=${STOW}/bin:${PATH}" state=present
+- name: ensure $STOW is defined
+  lineinfile:
+    dest={{HOME.stdout}}/.bashrc
+    regexp="^export STOW={{STOW_PATH}}$"
+    line="export STOW={{STOW_PATH}}"
+    state=present
+    insertafter=EOF
+    create=True
 #  notify:
-#    - command: source ${HOME}/.bashrc
+#    - source bash
+
+- name: Ensure Stow's bin has precedence over $PATH
+  lineinfile:
+    dest={{HOME.stdout}}/.bashrc
+    regexp="^export PATH=.*STOW.*:.*PATH"
+    line="export PATH=${STOW}/../bin:${PATH}"
+    state=present
+    insertafter=EOF
+    create=True
+#  notify:
+#    - source bash
