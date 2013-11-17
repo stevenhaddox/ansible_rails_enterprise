@@ -18,8 +18,8 @@
     state=present
     insertafter=EOF
     create=True
-#  notify:
-#    - source bash
+  notify:
+    - source bash
 
 - name: Ensure Stow's bin has precedence over $PATH
   lineinfile:
@@ -29,5 +29,5 @@
     state=present
     insertafter=EOF
     create=True
-#  notify:
-#    - source bash
+  notify:
+    - source bash
