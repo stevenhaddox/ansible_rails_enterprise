@@ -1,5 +1,26 @@
 ---
-sysadmin:    "sysadmin" # User to install libraries & packages from source
-deployer:    "deployer" # User to deploy Rails applications from
-STOW_PATH:   "{{HOME.stdout}}/opt/stow"
-SRC_PATH:    "{{HOME.stdout}}/SUPPORT/src"
+# Control Machine Variables
+LOCAL_SRC_PATH: "src"
+
+# Remote Node Variables
+sysadmin:  "sysadmin" # User to install libraries & packages from source
+deployer:  "deployer" # User to deploy Rails applications from
+STOW_PATH: "{{HOME.stdout}}/opt/stow"
+SRC_PATH:  "{{HOME.stdout}}/SUPPORT/src"
+src_bash:  "source {{HOME.stdout}}/.bashrc;"
+
+# Environment Variables
+
+# Want to try to get the below variables in an environment variable but it's
+# not picking it up when using: `environment: stow_env` in a task...
+# throws an error about `filename` not being defined
+#name:    "stow"
+#version: "2.2.0.tar.bz2"
+#ext:  "tar.bz2"
+#filename: "{{name}}-{{version}}.{{ext}}"
+
+stow_env:
+  name: "stow"
+  ver:  "2.2.0.tar.bz2"
+  ext:  "tar.bz2"
+  filename: "{{name}}-{{version}}.{{ext}}"

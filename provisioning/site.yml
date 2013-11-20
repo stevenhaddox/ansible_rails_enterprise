@@ -16,7 +16,6 @@
   roles:
     - common
 
-
 #- name: Setup the webserver infrastructure
 #  hosts: webservers
 #  sudo_user: ${sysadmin}

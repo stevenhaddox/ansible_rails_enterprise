@@ -2,13 +2,19 @@
 - name: Set ${sysadmins}'s $HOME variable
   command: chdir=~ pwd
   register: HOME
-  ignore_errors: True
+  ignore_errors: yes
 
-- name: Create STOW directory
-  command: mkdir -p {{STOW_PATH}} creates={{STOW_PATH}}/.ansible_keep
+- name: Create expected directories | [STOW, SRC]
+  command: mkdir -p {{item}} creates={{item}}/.ansible_keep
+  with_items:
+    - "{{STOW_PATH}}"
+    - "{{SRC_PATH}}"
 
-- name: Prevent 'changed' status on STOW dir creation
-  command: touch {{STOW_PATH}}/.ansible_keep creates={{STOW_PATH}}/.ansible_keep
+- name: Prevent 'changed' status on [STOW, SRC] directory creation
+  command: touch {{item}}/.ansible_keep creates={{item}}/.ansible_keep
+  with_items:
+    - "{{STOW_PATH}}"
+    - "{{SRC_PATH}}"
 
 - name: ensure $STOW is defined
   lineinfile:
@@ -21,7 +27,7 @@
   notify:
     - source bash
 
-- name: Ensure Stow's bin has precedence over $PATH
+- name: Ensure stow's bin has precedence over $PATH
   lineinfile:
     dest={{HOME.stdout}}/.bashrc
     regexp="^export PATH=.*STOW.*:.*PATH"
@@ -29,5 +35,18 @@
     state=present
     insertafter=EOF
     create=True
+
+- name: ensure $SRC is defined
+  lineinfile:
+    dest={{HOME.stdout}}/.bashrc
+    regexp="^export SRC={{SRC_PATH}}$"
+    line="export SRC={{SRC_PATH}}"
+    state=present
+    insertafter=EOF
+    create=True
   notify:
     - source bash
+
+- name: Copy Stow src file to remote node
+  copy: src={{LOCAL_SRC_PATH}}/{{filename}} dest={{SRC_PATH}}/{{filename}} owner={{sysadmin}} mode=0644
+  environment: stow_env #<-- this doesn't load the filename var...
