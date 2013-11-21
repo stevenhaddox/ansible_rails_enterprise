@@ -1,11 +1,14 @@
+---
 - hosts: all
-  gather_facts: no
-  tasks:
-    - name: Install expected compiler packages
-      yum: pkg=$item state=latest
-      with_items:
-        - gcc-c++
-        - make
+#- hosts: all
+#  gather_facts: no
+#  tasks:
+#    - name: Install expected compiler packages
+#      yum: pkg=$item state=latest
+#      with_items:
+#        - gcc-c++
+#        - make
+# Not yet needed:
 #        - glibc
 #        - patch
 #        - readline

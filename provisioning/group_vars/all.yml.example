@@ -14,13 +14,22 @@ src_bash:  "source {{HOME.stdout}}/.bashrc;"
 # Want to try to get the below variables in an environment variable but it's
 # not picking it up when using: `environment: stow_env` in a task...
 # throws an error about `filename` not being defined
-#name:    "stow"
-#version: "2.2.0.tar.bz2"
-#ext:  "tar.bz2"
-#filename: "{{name}}-{{version}}.{{ext}}"
+name:     "stow"
+version:  "2.2.0"
+ext:      "tar.bz2"
+filename: "{{name}}-{{version}}.{{ext}}"
+folder:   "{{name}}-{{version}}" # Should match tarball extracted folder name
 
 stow_env:
-  name: "stow"
-  ver:  "2.2.0.tar.bz2"
-  ext:  "tar.bz2"
+  name:     "stow"
+  version:  "2.2.0"
+  ext:      "tar.bz2"
   filename: "{{name}}-{{version}}.{{ext}}"
+  folder:   "{{name}}-{{version}}" # Should match tarball extracted folder name
+
+git_env:
+  name:     "git"
+  version:  "1.8.4.4"
+  ext:      "tar.gz"
+  filename: "{{name}}-{{version}}.{{ext}}"
+  folder:   "{{name}}-{{version}}" # Should match tarball extracted folder name
