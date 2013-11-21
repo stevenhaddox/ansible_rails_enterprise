@@ -1,0 +1,73 @@
+####################
+# Install GNU Stow #
+####################
+
+- name: Create expected directories | [STOW, SRC]
+  file: path={{item}} state=directory
+  with_items:
+    - "{{STOW_PATH}}"
+    - "{{SRC_PATH}}"
+
+- name: ensure $STOW is defined
+  lineinfile:
+    dest={{HOME.stdout}}/.bashrc
+    regexp="^export STOW={{STOW_PATH}}$"
+    line="export STOW={{STOW_PATH}}"
+    state=present
+    insertafter=EOF
+    create=True
+  notify:
+    - source bash
+
+- name: Ensure stow's bin has precedence over $PATH
+  lineinfile:
+    dest={{HOME.stdout}}/.bashrc
+    regexp="^export PATH=.*STOW.*:.*PATH"
+    line="export PATH=${STOW}/../bin:${PATH}"
+    state=present
+    insertafter=EOF
+    create=True
+
+- name: ensure $SRC is defined
+  lineinfile:
+    dest={{HOME.stdout}}/.bashrc
+    regexp="^export SRC={{SRC_PATH}}$"
+    line="export SRC={{SRC_PATH}}"
+    state=present
+    insertafter=EOF
+    create=True
+  notify:
+    - source bash
+
+# Detect stow's presence
+- stat: path={{STOW_PATH}}/../bin/stow
+  register: stow_bin
+
+- name: Copy Stow src file to remote node
+  when: stow_bin.stat.exists == false
+#  environment: stow_env
+  copy: src={{LOCAL_SRC_PATH}}/{{filename}} dest={{SRC_PATH}}/{{filename}} owner={{sysadmin}} mode=0644
+
+- name: Install GNU Stow
+  when: stow_bin.stat.exists == false
+#  environment: stow_env
+  shell:
+    "{{src_bash}}
+    cd {{SRC_PATH}};
+    tar -xjf {{filename}};
+    cd {{folder}};
+    ./configure --prefix={{STOW_PATH}}/{{folder}};
+    make;
+    make install prefix={{STOW_PATH}}/{{folder}};
+    cd {{STOW_PATH}};
+    ./{{folder}}/bin/stow {{folder}}"
+  notify:
+    - source bash
+
+- name: Detect stow version
+  shell: "{{src_bash}} stow --version"
+  register: stow_version
+  changed_when: "stow_version.rc != 0"
+
+- name: Display stow version
+  debug: msg="{{stow_version.stdout}}"

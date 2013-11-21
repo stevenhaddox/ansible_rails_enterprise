@@ -12,6 +12,8 @@
 * sudo from a non-privileged user account (e.g., `vagrant`) to `sysadmin` account
 * `Python 2.4+` is in `$PATH` and has the `simplejson` module (ansible requirements for your remote servers)
 * OR `Python 2.6+` is installed and accessible via `$PATH`
+* Perl 5+ is installed and accessible via `$PATH`
+* gcc & make are accessible
 
 # Development / Testing with Vagrant:
 

@@ -1,22 +1,16 @@
 ---
 - name: Set ${sysadmins}'s $HOME variable
-  command: chdir=~ pwd
+  shell: chdir=~ pwd
   register: HOME
-  ignore_errors: True
+  ignore_errors: yes
+  changed_when: "HOME.rc != 0"
 
-- name: Create STOW directory
-  command: mkdir -p {{STOW_PATH}} creates={{STOW_PATH}}/.ansible_keep
+####################
+# Install GNU Stow #
+####################
+- include: stow.yml
 
-- name: Prevent 'changed' status on STOW dir creation
-  command: touch {{STOW_PATH}}/.ansible_keep creates={{STOW_PATH}}/.ansible_keep
-
-#- name: ensure $STOW is defined
-#  lineinfile: dest=~/.bashrc state=present backrefs=yes regexp='^export STOW={{STOW_PATH}}' line='export STOW={{STOW_PATH}}'
-#  register: update_bashrc
-
-
-#- name: ensure $STOW is in PATH environment
-#  action: shell echo "Add $STOW to PATH if missing"
-#  lineinfile: destfile=${HOME}/.bashrc regexpr="$export PATH=${STOW}/../bin:${PATH}" line="export PATH=${STOW}/bin:${PATH}" state=present
-#  notify:
-#    - command: source ${HOME}/.bashrc
+######################
+# Available Packages #
+#############@@#######
+#- include: git.yml

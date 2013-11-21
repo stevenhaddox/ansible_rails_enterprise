@@ -1,5 +1,0 @@
----
-sysadmin:    "sysadmin" # User to install libraries & packages from source
-deployer:    "deployer" # User to deploy Rails applications from
-STOW_PATH:   "{{HOME.stdout}}/opt/stow"
-SRC_PATH:    "{{HOME.stdout}}/SUPPORT/src"

@@ -3,5 +3,7 @@
     action: shell whoami
     register: whoami
 
+  # "> " puts yaml in quote mode and enables : chars in output
   - name: Debug which user is running the tasks
-    debug: msg="Logged in as {{ whoami.stdout }}"
+    debug: >
+      msg="Logged in as: {{ whoami.stdout }}"

@@ -1,0 +1,26 @@
+---
+- hosts: all
+#- hosts: all
+#  gather_facts: no
+#  tasks:
+#    - name: Install expected compiler packages
+#      yum: pkg=$item state=latest
+#      with_items:
+#        - gcc-c++
+#        - make
+# Not yet needed:
+#        - glibc
+#        - patch
+#        - readline
+#        - readline-devel
+#        - zlib
+#        - zlib-devel
+#        - libyaml-devel
+#        - libffi-devel
+#        - openssl-devel
+#        - bzip2
+#        - autoconf
+#        - automake
+#        - libtool
+#        - bison
+#        - git-core
