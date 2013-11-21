@@ -5,6 +5,9 @@
 ##### Control Machine:
 
 * [Ansible](http://www.ansibleworks.com/docs/intro_installation.html) is installed on your `Control Machine`
+* Setup your configuration file:
+  ** `$ cp provisioning/group_vars/all.yml.example provisioning/group_vars/all.yml`
+  ** Modify `provisioning/group_vars/all.yml` with your file versions, users, etc.
 
 ##### Remote Nodes:
 
@@ -48,7 +51,7 @@ $ vagrant box list
 $ vagrant up --no-provision
 # Boostrap the server to add python-simplejson
 $ ansible-playbook provisioning/init.yml -i provisioning/hosts/vagrant --user=vagrant --sudo
-# Repeat with each `provisioning/playbook.yml` modification:
+# Repeat the following with each `provisioning/site.yml` modification:
 $ vagrant provision
 # Destroy as needed and repeat from `vagrant up`:
 $ vagrant destroy
