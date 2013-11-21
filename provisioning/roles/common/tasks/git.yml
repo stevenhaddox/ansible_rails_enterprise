@@ -1,0 +1,8 @@
+###############
+# Install Git #
+###############
+
+- name: Install Git
+  environment: git_env
+  debug: msg="Pending... Filename:{{filename}}" #<-- broken, not loading git_env['filename']
+  changed_when: true

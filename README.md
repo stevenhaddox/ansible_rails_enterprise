@@ -6,8 +6,9 @@
 
 * [Ansible](http://www.ansibleworks.com/docs/intro_installation.html) is installed on your `Control Machine`
 * Setup your configuration file:
-  *     `$ cp provisioning/group_vars/all.yml.example provisioning/group_vars/all.yml`  
+  *     `$ cp provisioning/group_vars/all.yml.example provisioning/group_vars/all.yml`
   * Modify `provisioning/group_vars/all.yml` with your file versions, users, etc.
+  * Download all src files needed to: `provisioning/roles/common/files/src`
 
 ##### Remote Nodes:
 
