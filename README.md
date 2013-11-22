@@ -8,7 +8,7 @@
 * Setup your configuration file:
   *     `$ cp provisioning/group_vars/all.yml.example provisioning/group_vars/all.yml`
   * Modify `provisioning/group_vars/all.yml` with your file versions, users, etc.
-  * Download all src files needed to: `provisioning/roles/common/files/src`
+  * Download all src files needed to: `provisioning/src_files`
 
 ##### Remote Nodes:
 
@@ -43,7 +43,7 @@ $ vagrant box list
 ```
 
 **Note**: To install the `python-simplejson` module for Python 2.4.3 on the SUPPORT VM run the following playbook:  
-`ansible-playbook provisioning/init.yml -i provisioning/hosts/vagrant --user=vagrant --sudo`
+`ansible-playbook provisioning/init.yml -i provisioning/hosts/vagrant --u vagrant --sudo`
 
 ### Develop / Test the Ansible Provisioning Playbook:
 

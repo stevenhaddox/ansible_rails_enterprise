@@ -1,3 +1,5 @@
 .vagrant
 provisioning/group_vars/all.yml
+provisioning/src_files/*
 provisioning/roles/common/files/src/
+.DS_Store

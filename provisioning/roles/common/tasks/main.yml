@@ -1,5 +1,5 @@
 ---
-- name: Set ${sysadmins}'s $HOME variable
+- name: Set sysadmin user's $HOME variable
   shell: chdir=~ pwd
   register: HOME
   ignore_errors: yes
@@ -13,4 +13,4 @@
 ######################
 # Available Packages #
 #############@@#######
-#- include: git.yml
+- include: git.yml
