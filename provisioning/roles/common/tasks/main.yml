@@ -12,5 +12,8 @@
 
 ######################
 # Available Packages #
-#############@@#######
-- include: git.yml
+######################
+# Installs: libevent, ncurses, tmux
+- include: tmux.yml
+# Needs: gcc-c++ curl-devel expat-devel gettext-devel openssl-devel zlib-devel
+#- include: git.yml

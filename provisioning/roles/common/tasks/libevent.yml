@@ -1,0 +1,54 @@
+####################
+# Install libevent #
+####################
+
+###################
+# Requirements:   #
+# * gcc-c++       #
+###################
+
+# Set src filename
+- command: echo "{{src.libevent.name}}-{{src.libevent.ver}}-stable.{{src.libevent.ext}}"
+  register: src_file_name
+  changed_when: false
+
+- command: echo "{{src.libevent.name}}-{{src.libevent.ver}}-stable"
+  register: src_folder
+  changed_when: false
+
+- debug: msg="src_file_name =>{{src_file_name.stdout}}"
+- debug: msg="src_folder =>{{src_folder.stdout}}"
+
+# Detect libevent
+- stat: path={{STOW_PATH}}/../include/event2
+  register: libevent_path
+  changed_when: libevent_path.stat.exists == false
+
+- name: Create libevent src directory
+  when: libevent_path.stat.exists == false
+  command: mkdir -p {{SRC_PATH}}/{{src_folder.stdout}} creates={{SRC_PATH}}/{{src_folder.stdout}}
+
+- name: Copy libevent src file to remote node
+  when: libevent_path.stat.exists == false
+#  unarchive: src={{LOCAL_SRC_PATH}}/{{src_file_name.stdout}} dest={{SRC_PATH}}/{{src_folder.stdout}}
+  copy: src={{LOCAL_SRC_PATH}}/{{src_file_name.stdout}} dest={{SRC_PATH}}/{{src_file_name.stdout}} owner={{sysadmin}} mode=0644
+
+- name: Install libevent
+  when: libevent_path.stat.exists == false
+  shell:
+    "{{src_bash}}
+    cd {{SRC_PATH}};
+    tar -xzf {{src_file_name.stdout}};
+    cd {{src_folder.stdout}};
+    ./configure --prefix={{STOW_PATH}}/{{src_folder.stdout}} --disable-shared;
+    make;
+    make install prefix={{STOW_PATH}}/{{src_folder.stdout}};
+    cd {{STOW_PATH}};
+    stow {{src_folder.stdout}}"
+
+- stat: path={{STOW_PATH}}/../include/event2/libevent_core.a
+  register: libevent_core
+  changed_when: libevent_core.stat.exists == False
+
+- name: Display libevent location
+  debug: msg="{{libevent_core}}"

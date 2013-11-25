@@ -15,15 +15,33 @@ src_bash:  "source {{HOME.stdout}}/.bashrc;"
 src:
   defaults: &defaults
     custom_folder: false
+  git:
+    <<:   *defaults
+    url:  "https://git-core.googlecode.com/files/git-1.8.4.4.tar.gz"
+    name: "git"
+    ver:  "1.8.4.4"
+    ext:  "tar.gz"
+  libevent:
+    <<:   *defaults
+    url:  "https://github.com/downloads/libevent/libevent/libevent-2.0.21-stable.tar.gz"
+    name: "libevent"
+    ver:  "2.0.21"
+    ext:  "tar.gz"
+  ncurses:
+    <<:   *defaults
+    url:  "ftp://ftp.gnu.org/gnu/ncurses/ncurses-5.9.tar.gz"
+    name: "ncurses"
+    ver:  "5.9"
+    ext:  "tar.gz"
   stow:
     <<:   *defaults
     url:  "http://ftp.gnu.org/gnu/stow/stow-2.2.0.tar.bz2"
     name: "stow"
     ver:  "2.2.0"
     ext:  "tar.bz2"
-  git:
+  tmux:
     <<:   *defaults
-    url:  "https://git-core.googlecode.com/files/git-1.8.4.4.tar.gz"
-    name: "git"
-    ver:  "1.8.4.4"
+    url:  "http://sourceforge.net/projects/tmux/files/tmux/tmux-1.8/tmux-1.8.tar.gz"
+    name: "tmux"
+    ver:  "1.8"
     ext:  "tar.gz"

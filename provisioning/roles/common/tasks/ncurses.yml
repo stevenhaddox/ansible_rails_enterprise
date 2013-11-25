@@ -1,46 +1,40 @@
-###############
-# Install Git #
-###############
+###################
+# Install ncurses #
+###################
 
 ###################
 # Requirements:   #
 # * gcc-c++       #
-# * curl-devel    #
-# * expat-devel   #
-# * gettext-devel #
-# * openssl-devel #
-# * zlib-devel    #
 ###################
 
-# Set git src filename
-- command: echo "{{src.git.name}}-{{src.git.ver}}.{{src.git.ext}}"
+# Set ncurses src filename
+- command: echo "{{src.ncurses.name}}-{{src.ncurses.ver}}.{{src.ncurses.ext}}"
   register: src_file_name
   changed_when: false
 
-- command: echo "{{src.git.name}}-{{src.git.ver}}"
+- command: echo "{{src.ncurses.name}}-{{src.ncurses.ver}}"
   register: src_folder
   changed_when: false
 
 - debug: msg="src_file_name =>{{src_file_name.stdout}}"
-
 - debug: msg="src_folder =>{{src_folder.stdout}}"
 
-# Detect git's presence
-- stat: path={{STOW_PATH}}/../bin/git
-  register: git_bin
-  changed_when: git_bin.stat.exists == false
+# Detect ncurses
+- stat: path={{STOW_PATH}}/../share/terminfo
+  register: ncurses_bin
+  changed_when: ncurses_bin.stat.exists == false
 
-- name: Create git src directory
-  when: git_bin.stat.exists == false
+- name: Create ncurses src directory
+  when: ncurses_bin.stat.exists == false
   command: mkdir -p {{SRC_PATH}}/{{src_folder.stdout}} creates={{SRC_PATH}}/{{src_folder.stdout}}
 
-- name: Copy git src file to remote node
-  when: git_bin.stat.exists == false
+- name: Copy ncurses src file to remote node
+  when: ncurses_bin.stat.exists == false
 #  unarchive: src={{LOCAL_SRC_PATH}}/{{src_file_name.stdout}} dest={{SRC_PATH}}/{{src_folder.stdout}}
   copy: src={{LOCAL_SRC_PATH}}/{{src_file_name.stdout}} dest={{SRC_PATH}}/{{src_file_name.stdout}} owner={{sysadmin}} mode=0644
 
-- name: Install Git
-  when: git_bin.stat.exists == false
+- name: Install ncurses
+  when: ncurses_bin.stat.exists == false
   shell:
     "{{src_bash}}
     cd {{SRC_PATH}};
@@ -50,13 +44,9 @@
     make;
     make install prefix={{STOW_PATH}}/{{src_folder.stdout}};
     cd {{STOW_PATH}};
-    ./{{src_folder.stdout}}/bin/stow {{src_folder.stdout}}"
-  notify:
-    - source bash
+    stow {{src_folder.stdout}}"
 
-- shell: "{{src_bash}} git --version"
-  register: git_version
-  changed_when: "git_version.rc != 0"
-
-- name: Display git version
-  debug: msg="{{git_version.stdout}}"
+- name:  Verify ncurses installed properly
+  shell: "{{src_bash}} ncurses5-config --help"
+  register: ncurses_config
+  changed_when: "ncurses_config.rc != 0"
