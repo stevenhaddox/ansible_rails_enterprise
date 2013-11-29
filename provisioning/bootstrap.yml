@@ -1,26 +1,83 @@
 ---
 - hosts: all
-#- hosts: all
-#  gather_facts: no
+  gather_facts: yes
+  tasks:
+    - group_by: key={{ansible_os_family}}
+
+# Suggested packages from:
+# https://github.com/opscode-cookbooks/build-essential/tree/master/recipes
+
+- hosts: RedHat
+#  roles:
+#    - role: bootstrap_redhat
+  tasks:
+    - name: Install "build-essential" packages for RHEL < 6
+      when: ansible_distribution_version.split(".")[0]|int < 6
+      debug: msg="I will install essential packages for RHEL-based < 6.0"
+##      yum: pkg={{item}} state=latest
+##      with_items:
+##        - gcc-c++
+##        - gcc44-c++
+#
+    - name: Install essential packages for RHEL-based systems
+      debug: msg="I will install essential packages for RHEL"
+##      yum: pkg={{item}} state=latest
+##      with_items:
+##        - gcc-c++
+## "build-essential" not yet needed:
+##        - autoconf
+##        - bison
+##        - flex
+##        - gcc
+##        - kernel-devel
+##        - make
+##        - m4
+#
+#- hosts: Debian
+##  roles:
+##    - role: bootstrap_debian
 #  tasks:
-#    - name: Install expected compiler packages
-#      yum: pkg=$item state=latest
-#      with_items:
-#        - gcc-c++
-#        - make
-# Not yet needed:
-#        - glibc
-#        - patch
-#        - readline
-#        - readline-devel
-#        - zlib
-#        - zlib-devel
-#        - libyaml-devel
-#        - libffi-devel
-#        - openssl-devel
-#        - bzip2
-#        - autoconf
-#        - automake
-#        - libtool
-#        - bison
-#        - git-core
+#    - name: Install "build essential" packages for Debian-based systems
+#      debug: msg="I will install essential packages for RHEL < 6.0"
+##      apt: pkg={{item}} state=latest
+##      with_items:
+##        - build_essential
+#
+#- hosts: Solaris
+##  roles:
+##    - role: bootstrap_solaris
+#  - tasks:
+#    - name: Install "build-essential" packages for Solaris
+#      debug: msg="I will install essential packages for Solaris"
+##      pkgutil: name={{item}} state=latest
+##      with_items:
+##        - autoconf
+##        - automake
+##        - bison
+##        - coreutils
+##        - flex
+##        - gcc4core
+##        - gcc4g++
+##        - gcc4objc
+##        - gcc3core
+##        - gcc3g++
+##        - ggrep
+##        - gmake
+##        - gtar
+##        - pkgconfig
+#
+## Other packages to consider but not yet needed:
+##        - glibc
+##        - patch
+##        - readline
+##        - readline-devel
+##        - zlib
+##        - zlib-devel
+##        - libyaml-devel
+##        - libffi-devel
+##        - openssl-devel
+##        - bzip2
+##        - autoconf
+##        - automake
+##        - libtool
+##        - git-core

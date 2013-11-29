@@ -5,20 +5,22 @@
 #- name: Verify who's running commands via debug
 #  hosts: all
 #  sudo: True
-#  sudo_user: ${sysadmin}
+#  sudo_user: "{{sysadmin}}"
 #  roles:
 #    - debug
 
 - name: Initialize all SUPPORT servers
+  vars_files:
+  - group_vars/all.yml
   hosts: all
-  sudo: True
-  sudo_user: ${sysadmin}
+  sudo: yes
+  sudo_user: "{{sysadmin}}"
   roles:
     - common
 
 #- name: Setup the webserver infrastructure
 #  hosts: webservers
-#  sudo_user: ${sysadmin}
+#  sudo_user: "{{sysadmin}}"
 #  user:
 #  vars_prompt:
 #    ssl_passphrase: "Please enter the passphrase for the SSL certificate"
@@ -27,21 +29,21 @@
 #
 #- name: Setup the DB infrastructure
 #  hosts: dbservers
-#  sudo_user: ${sysadmin}
+#  sudo_user: "{{sysadmin}}"
 #  user:
 #  roles:
 #    - db
 #
 #- name: Setup the Ruby environment
 #  hosts: ruby&rails
-#  sudo_user: ${sysadmin}
+#  sudo_user: "{{sysadmin}}"
 #  user:
 #  roles:
 #    - rails
 #
 #- name: Setup the Rails environment
 #  hosts: rails
-#  sudo_user: ${sysadmin}
+#  sudo_user: "{{sysadmin}}"
 #  user:
 #  roles:
 #    - rails

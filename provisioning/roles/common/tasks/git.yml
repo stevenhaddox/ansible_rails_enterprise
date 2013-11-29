@@ -1,0 +1,62 @@
+###############
+# Install Git #
+###############
+
+###################
+# Requirements:   #
+# * gcc-c++       #
+# * curl-devel    #
+# * expat-devel   #
+# * gettext-devel #
+# * openssl-devel #
+# * zlib-devel    #
+###################
+
+# Set git src filename
+- command: echo "{{src.git.name}}-{{src.git.ver}}.{{src.git.ext}}"
+  register: src_file_name
+  changed_when: false
+
+- command: echo "{{src.git.name}}-{{src.git.ver}}"
+  register: src_folder
+  changed_when: false
+
+- debug: msg="src_file_name =>{{src_file_name.stdout}}"
+
+- debug: msg="src_folder =>{{src_folder.stdout}}"
+
+# Detect git's presence
+- stat: path={{STOW_PATH}}/../bin/git
+  register: git_bin
+  changed_when: git_bin.stat.exists == false
+
+- name: Create git src directory
+  when: git_bin.stat.exists == false
+  command: mkdir -p {{SRC_PATH}}/{{src_folder.stdout}} creates={{SRC_PATH}}/{{src_folder.stdout}}
+
+- name: Copy git src file to remote node
+  when: git_bin.stat.exists == false
+#  unarchive: src={{LOCAL_SRC_PATH}}/{{src_file_name.stdout}} dest={{SRC_PATH}}/{{src_folder.stdout}}
+  copy: src={{LOCAL_SRC_PATH}}/{{src_file_name.stdout}} dest={{SRC_PATH}}/{{src_file_name.stdout}} owner={{sysadmin}} mode=0644
+
+- name: Install Git
+  when: git_bin.stat.exists == false
+  shell:
+    "{{src_bash}}
+    cd {{SRC_PATH}};
+    tar -xzf {{src_file_name.stdout}};
+    cd {{src_folder.stdout}};
+    ./configure --prefix={{STOW_PATH}}/{{src_folder.stdout}};
+    make;
+    make install prefix={{STOW_PATH}}/{{src_folder.stdout}};
+    cd {{STOW_PATH}};
+    ./{{src_folder.stdout}}/bin/stow {{src_folder.stdout}}"
+  notify:
+    - source bash
+
+- shell: "{{src_bash}} git --version"
+  register: git_version
+  changed_when: "git_version.rc != 0"
+
+- name: Display git version
+  debug: msg="{{git_version.stdout}}"

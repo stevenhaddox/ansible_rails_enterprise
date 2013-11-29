@@ -8,7 +8,7 @@
     - "{{STOW_PATH}}"
     - "{{SRC_PATH}}"
 
-- name: ensure $STOW is defined
+- name: Ensure $STOW is defined
   lineinfile:
     dest={{HOME.stdout}}/.bashrc
     regexp="^export STOW={{STOW_PATH}}$"
@@ -27,8 +27,10 @@
     state=present
     insertafter=EOF
     create=True
+  notify:
+    - source bash
 
-- name: ensure $SRC is defined
+- name: Ensure $SRC is defined
   lineinfile:
     dest={{HOME.stdout}}/.bashrc
     regexp="^export SRC={{SRC_PATH}}$"
@@ -43,29 +45,39 @@
 - stat: path={{STOW_PATH}}/../bin/stow
   register: stow_bin
 
-- name: Copy Stow src file to remote node
+- command: echo "{{src.stow.name}}-{{src.stow.ver}}.{{src.stow.ext}}"
+  register: src_file_name
+  changed_when: false
+
+- command: echo "{{src.stow.name}}-{{src.stow.ver}}"
+  register: src_folder
+  changed_when: false
+
+- name: Create git src directory
   when: stow_bin.stat.exists == false
-#  environment: stow_env
-  copy: src={{LOCAL_SRC_PATH}}/{{filename}} dest={{SRC_PATH}}/{{filename}} owner={{sysadmin}} mode=0644
+  command: mkdir -p {{SRC_PATH}}/{{src_folder.stdout}} creates={{SRC_PATH}}/{{src_folder.stdout}}
+
+- name: Copy stow's source file to remote node
+  when: stow_bin.stat.exists == false
+#  unarchive: src={{LOCAL_SRC_PATH}}/{{src_file_name.stdout}} dest={{SRC_PATH}}/{{src_folder.stdout}}
+  copy: src={{LOCAL_SRC_PATH}}/{{src_file_name.stdout}} dest={{SRC_PATH}}/{{src_file_name.stdout}} owner={{sysadmin}} mode=0644
 
 - name: Install GNU Stow
   when: stow_bin.stat.exists == false
-#  environment: stow_env
   shell:
     "{{src_bash}}
     cd {{SRC_PATH}};
-    tar -xjf {{filename}};
-    cd {{folder}};
-    ./configure --prefix={{STOW_PATH}}/{{folder}};
+    tar -xjf {{src_file_name.stdout}};
+    cd {{src_folder.stdout}};
+    ./configure --prefix={{STOW_PATH}}/{{src_folder.stdout}};
     make;
-    make install prefix={{STOW_PATH}}/{{folder}};
+    make install prefix={{STOW_PATH}}/{{src_folder.stdout}};
     cd {{STOW_PATH}};
-    ./{{folder}}/bin/stow {{folder}}"
+    ./{{src_folder.stdout}}/bin/stow {{src_folder.stdout}}"
   notify:
     - source bash
 
-- name: Detect stow version
-  shell: "{{src_bash}} stow --version"
+- shell: "{{src_bash}} stow --version"
   register: stow_version
   changed_when: "stow_version.rc != 0"
 

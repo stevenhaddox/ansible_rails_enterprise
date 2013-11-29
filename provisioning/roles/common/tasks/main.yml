@@ -1,5 +1,5 @@
 ---
-- name: Set ${sysadmins}'s $HOME variable
+- name: Set sysadmin user's $HOME variable
   shell: chdir=~ pwd
   register: HOME
   ignore_errors: yes
@@ -12,5 +12,8 @@
 
 ######################
 # Available Packages #
-#############@@#######
+######################
+# Installs: libevent, ncurses, tmux
+- include: tmux.yml
+# Needs: gcc-c++ curl-devel expat-devel gettext-devel openssl-devel zlib-devel
 #- include: git.yml
