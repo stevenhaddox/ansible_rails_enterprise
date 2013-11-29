@@ -17,12 +17,24 @@ src:
     custom_folder: false
     prefix: ""
     suffix: ""
+  gcc:
+    <<:   *defaults
+    url:  "http://ftp.gnu.org/gnu/gcc/gcc-4.8.2/gcc-4.8.2.tar.bz2"
+    name: "gcc"
+    ver:  "4.8.2"
+    ext:  "tar.bz2"
   git:
     <<:   *defaults
     url:  "https://git-core.googlecode.com/files/git-1.8.4.4.tar.gz"
     name: "git"
     ver:  "1.8.4.4"
     ext:  "tar.gz"
+  gmp:
+    <<:   *defaults
+    url:  "ftp://ftp.gmplib.org/pub/gmp-5.1.3/gmp-5.1.3.tar.bz2"
+    name: "gmp"
+    ver:  "5.1.3"
+    ext:  "tar.bz2"
   libevent:
     <<:   *defaults
     url:  "https://github.com/downloads/libevent/libevent/libevent-2.0.21-stable.tar.gz"
@@ -36,6 +48,18 @@ src:
     name: "ncurses"
     ver:  "5.9"
     ext:  "tar.gz"
+  mpc:
+    <<:   *defaults
+    url:  "http://www.multiprecision.org/mpc/download/mpc-1.0.1.tar.gz"
+    name: "mpc"
+    ver:  "1.0.1"
+    ext:  "tar.gz"
+  mpfr:
+    <<:   *defaults
+    url:  "http://www.mpfr.org/mpfr-3.1.2/mpfr-3.1.2.tar.xz"
+    name: "mpfr"
+    ver:  "3.1.2"
+    ext:  "tar.xz"
   stow:
     <<:   *defaults
     url:  "http://ftp.gnu.org/gnu/stow/stow-2.2.0.tar.bz2"
