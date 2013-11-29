@@ -19,8 +19,8 @@
 ##        - gcc-c++
 ##        - gcc44-c++
 #
-#    - name: Install essential packages for RHEL-based systems
-#      debug: msg="I will install essential packages for RHEL"
+    - name: Install essential packages for RHEL-based systems
+      debug: msg="I will install essential packages for RHEL"
 ##      yum: pkg={{item}} state=latest
 ##      with_items:
 ##        - gcc-c++

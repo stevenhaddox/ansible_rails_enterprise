@@ -6,18 +6,7 @@
 # Requirements:   #
 # * gcc-c++       #
 ###################
-
-# Set src filename
-- command: echo "{{src.libevent.name}}-{{src.libevent.ver}}-stable.{{src.libevent.ext}}"
-  register: src_file_name
-  changed_when: false
-
-- command: echo "{{src.libevent.name}}-{{src.libevent.ver}}-stable"
-  register: src_folder
-  changed_when: false
-
-- debug: msg="src_file_name =>{{src_file_name.stdout}}"
-- debug: msg="src_folder =>{{src_folder.stdout}}"
+- { include: set_src_vars.yml, package: "{{src.libevent}}" }
 
 # Detect libevent
 - stat: path={{STOW_PATH}}/../include/event2
@@ -46,9 +35,9 @@
     cd {{STOW_PATH}};
     stow {{src_folder.stdout}}"
 
-- stat: path={{STOW_PATH}}/../include/event2/libevent_core.a
+- stat: path={{STOW_PATH}}/../lib/libevent_core.a
   register: libevent_core
-  changed_when: libevent_core.stat.exists == False
+  failed_when: libevent_core.stat.exists == False
 
-- name: Display libevent location
+- name: Display libevent core library path
   debug: msg="{{libevent_core}}"

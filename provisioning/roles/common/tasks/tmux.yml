@@ -11,45 +11,43 @@
 - include: libevent.yml
 #
 ## Set tmux src filename
-#- command: echo "{{src.tmux.name}}-{{src.tmux.ver}}.{{src.tmux.ext}}"
-#  register: src_file_name
-#  changed_when: false
-#
-#- command: echo "{{src.tmux.name}}-{{src.tmux.ver}}"
-#  register: src_folder
-#  changed_when: false
-#
-#- debug: msg="src_file_name =>{{src_file_name.stdout}}"
-#- debug: msg="src_folder =>{{src_folder.stdout}}"
-#
-## Detect tmux's presence
-#- stat: path={{STOW_PATH}}/../bin/tmux
-#  register: tmux_bin
-#  changed_when: tmux_bin.stat.exists == false
-#
-#- name: Create tmux src directory
-#  when: tmux_bin.stat.exists == false
-#  command: mkdir -p {{SRC_PATH}}/{{src_folder.stdout}} creates={{SRC_PATH}}/{{src_folder.stdout}}
-#
-#- name: Copy tmux src file to remote node
-#  when: tmux_bin.stat.exists == false
-##  unarchive: src={{LOCAL_SRC_PATH}}/{{src_file_name.stdout}} dest={{SRC_PATH}}/{{src_folder.stdout}}
-#  copy: src={{LOCAL_SRC_PATH}}/{{src_file_name.stdout}} dest={{SRC_PATH}}/{{src_file_name.stdout}} owner={{sysadmin}} mode=0644
-#
-#- name: Install Tmux
-#  when: tmux_bin.stat.exists == false
-#  shell:
-#    "{{src_bash}}
-#    cd {{SRC_PATH}};
-#    tar -xzf {{src_file_name.stdout}};
-#    cd {{src_folder.stdout}};
-#    "
-#  notify:
-#    - source bash
-#
-#- shell: "{{src_bash}} tmux --version"
-#  register: tmux_version
-#  changed_when: "tmux_version.rc != 0"
-#
-#- name: Display tmux version
-#  debug: msg="{{tmux_version.stdout}}"
+- { include: set_src_vars.yml, package: "{{src.tmux}}" }
+
+# Detect tmux's presence
+- stat: path={{STOW_PATH}}/../bin/tmux
+  register: tmux_bin
+  changed_when: tmux_bin.stat.exists == false
+
+- name: Create tmux src directory
+  when: tmux_bin.stat.exists == false
+  command: mkdir -p {{SRC_PATH}}/{{src_folder.stdout}} creates={{SRC_PATH}}/{{src_folder.stdout}}
+
+- name: Copy tmux src file to remote node
+  when: tmux_bin.stat.exists == false
+#  unarchive: src={{LOCAL_SRC_PATH}}/{{src_file_name.stdout}} dest={{SRC_PATH}}/{{src_folder.stdout}}
+  copy: src={{LOCAL_SRC_PATH}}/{{src_file_name.stdout}} dest={{SRC_PATH}}/{{src_file_name.stdout}} owner={{sysadmin}} mode=0644
+
+- name: Install Tmux
+  when: tmux_bin.stat.exists == false
+  shell:
+    '{{src_bash}}
+    cd {{SRC_PATH}};
+    tar -xzf {{src_file_name.stdout}};
+    cd {{src_folder.stdout}};
+    ./configure CFLAGS="-I{{STOW_PATH}}/../include -I{{STOW_PATH}}/../include/ncurses" LDFLAGS="-I{{STOW_PATH}}/../lib -L{{STOW_PATH}}/../include/ncurses -L{{STOW_PATH}}/../include" CPPFLAGS="-I{{STOW_PATH}}/../include -I{{STOW_PATH}}/../include/ncurses" LDFLAGS="-static -L{{STOW_PATH}}/../include -L{{STOW_PATH}}/../include/ncurses -L{{STOW_PATH}}/../lib";
+    make;
+    mkdir -p {{STOW_PATH}}/{{src_folder.stdout}}/bin;
+    cp tmux {{STOW_PATH}}/{{src_folder.stdout}}/bin;
+    cd {{STOW_PATH}};
+    stow {{src_folder.stdout}};
+    '
+  notify:
+    - source bash
+
+- shell: "{{src_bash}} tmux -V"
+  register: tmux_version
+  changed_when: tmux_version.rc != 0
+  failed_when:  tmux_version.rc != 0
+
+- name: Display tmux version
+  debug: msg="{{tmux_version.stdout}}"

@@ -6,18 +6,7 @@
 # Requirements:   #
 # * gcc-c++       #
 ###################
-
-# Set ncurses src filename
-- command: echo "{{src.ncurses.name}}-{{src.ncurses.ver}}.{{src.ncurses.ext}}"
-  register: src_file_name
-  changed_when: false
-
-- command: echo "{{src.ncurses.name}}-{{src.ncurses.ver}}"
-  register: src_folder
-  changed_when: false
-
-- debug: msg="src_file_name =>{{src_file_name.stdout}}"
-- debug: msg="src_folder =>{{src_folder.stdout}}"
+- { include: set_src_vars.yml, package: "{{src.ncurses}}" }
 
 # Detect ncurses
 - stat: path={{STOW_PATH}}/../share/terminfo
@@ -49,4 +38,5 @@
 - name:  Verify ncurses installed properly
   shell: "{{src_bash}} ncurses5-config --help"
   register: ncurses_config
-  changed_when: "ncurses_config.rc != 0"
+  changed_when: ncurses_config.rc != 0
+  failed_when: ncurses_config.rc  != 0

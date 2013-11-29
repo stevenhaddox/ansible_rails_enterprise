@@ -15,6 +15,8 @@ src_bash:  "source {{HOME.stdout}}/.bashrc;"
 src:
   defaults: &defaults
     custom_folder: false
+    prefix: ""
+    suffix: ""
   git:
     <<:   *defaults
     url:  "https://git-core.googlecode.com/files/git-1.8.4.4.tar.gz"
@@ -27,6 +29,7 @@ src:
     name: "libevent"
     ver:  "2.0.21"
     ext:  "tar.gz"
+    suffix: "-stable"
   ncurses:
     <<:   *defaults
     url:  "ftp://ftp.gnu.org/gnu/ncurses/ncurses-5.9.tar.gz"
