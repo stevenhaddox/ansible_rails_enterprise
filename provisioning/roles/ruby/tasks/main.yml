@@ -13,13 +13,63 @@
   register: rvm_bin
 
 - name: Install User RVM normally
-  when: rvm_fw == False and rvm_bin.stat.exists == false
+  when: rvm_fw.enabled == False and rvm_bin.stat.exists == false
   shell: \curl -L https://get.rvm.io | bash
   register: rvm_installed
   changed_when: rvm_installed.rc != 0
 
 - name: Install User RVM via RVM::FW
-  when: rvm_fw == True and rvm_bin.stat.exists == false
-  shell: \curl {{rvm_fw_url}}/releases/rvm-install-latest | bash
+  when: rvm_fw.enabled == True and rvm_bin.stat.exists == false
+  shell: \curl {{rvm_fw.url}}/releases/rvm-install-latest | bash
   register: rvm_installed
   changed_when: rvm_installed.rc != 0
+
+- name: Download Custom RVM::FW Config File
+  when: rvm_fw.enabled == True and rvm_bin.stat.exists == false
+  shell: wget {{rvm_fw.url}}/db -O ~/.rvm/user/db
+  register: config_file
+  changed_when: config_file.rc != 0
+
+- name: Download Custom RVM::FW Known File
+  when: rvm_fw.enabled == True and rvm_bin.stat.exists == false
+  shell: mv ~/.rvm/config/known ~/.rvm/config/known.bak && wget {{rvm_fw.url}}/known -O ~/.rvm/config/known
+  register: known_file
+  changed_when: known_file.rc != 0
+
+- name: Ensure RVM is sourced in .bashrc so it's detectable by Ansible shell module
+  lineinfile:
+    dest={{HOME.stdout}}/.bashrc
+    regexp="{{HOME.stdout}}/.rvm/scripts/rvm"
+    line="[[ -s '{{HOME.stdout}}/.rvm/scripts/rvm' ]] && source '{{HOME.stdout}}/.rvm/scripts/rvm'"
+    state="present"
+    insertafter=EOF
+    create=True
+
+# Install Specified Ruby
+- stat: path={{HOME.stdout}}/.rvm/rubies/{{rvm_fw.ruby}}/bin/ruby
+  register: ruby_bin
+
+- name: Install Ruby
+  when: ruby_bin.stat.exists == False
+  shell: "{{src_bash}} rvm install {{rvm_fw.ruby}} --verify-downloads 1 creates={{HOME.stdout}}/.rvm/rubies/{{rvm_fw.ruby}}"
+  register: ruby_installed
+
+- shell: "{{src_bash}} ruby --version"
+  register: ruby_test
+  changed_when: False
+  ignore_errors: yes
+
+- name: Set Default Ruby
+  when: ruby_test|failed
+  # Use bash -l -c to ensure RVM loads as a function to set default Ruby
+  shell: bash -l -c "{{src_bash}} rvm use {{rvm_fw.ruby}} --default"
+  register: default_rvm_ruby
+  changed_when: default_rvm_ruby.rc != 0
+
+- shell: "{{src_bash}} ruby --version"
+  register: ruby_version
+  changed_when: ruby_version.rc != 0
+
+# Display Ruby Version
+- name: Display ruby version
+  debug: msg="{{ruby_version.stdout}}"

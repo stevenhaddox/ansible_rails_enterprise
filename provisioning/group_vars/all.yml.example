@@ -11,5 +11,9 @@ SRC_PATH:  "{{HOME.stdout}}/SUPPORT/src"
 src_bash:  "source {{HOME.stdout}}/.bashrc;"
 
 # RVM::FW Config
-rvm_fw:     yes # no
-rvm_fw_url: "http://rvm-fw.slkdemos.com"  # ""
+rvm_fw:
+  enabled: yes # no
+  url: "http://rvm-fw.slkdemos.com"  # ""
+  ruby: "ruby-2.0.0-p353"
+
+
