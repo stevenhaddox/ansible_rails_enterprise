@@ -1,6 +1,5 @@
 ---
 # Control Machine Variables
-#LOCAL_SRC_PATH: "src"
 LOCAL_ANSIBLE_ROOT: "../../../../provisioning"
 LOCAL_SRC_PATH: "{{LOCAL_ANSIBLE_ROOT}}/src_files"
 
@@ -11,64 +10,6 @@ STOW_PATH: "{{HOME.stdout}}/opt/stow"
 SRC_PATH:  "{{HOME.stdout}}/SUPPORT/src"
 src_bash:  "source {{HOME.stdout}}/.bashrc;"
 
-# Package Variables
-src:
-  defaults: &defaults
-    custom_folder: false
-    prefix: ""
-    suffix: ""
-  gcc:
-    <<:   *defaults
-    url:  "http://ftp.gnu.org/gnu/gcc/gcc-4.8.2/gcc-4.8.2.tar.bz2"
-    name: "gcc"
-    ver:  "4.8.2"
-    ext:  "tar.bz2"
-  git:
-    <<:   *defaults
-    url:  "https://git-core.googlecode.com/files/git-1.8.4.4.tar.gz"
-    name: "git"
-    ver:  "1.8.4.4"
-    ext:  "tar.gz"
-  gmp:
-    <<:   *defaults
-    url:  "ftp://ftp.gmplib.org/pub/gmp-5.1.3/gmp-5.1.3.tar.bz2"
-    name: "gmp"
-    ver:  "5.1.3"
-    ext:  "tar.bz2"
-  libevent:
-    <<:   *defaults
-    url:  "https://github.com/downloads/libevent/libevent/libevent-2.0.21-stable.tar.gz"
-    name: "libevent"
-    ver:  "2.0.21"
-    ext:  "tar.gz"
-    suffix: "-stable"
-  ncurses:
-    <<:   *defaults
-    url:  "ftp://ftp.gnu.org/gnu/ncurses/ncurses-5.9.tar.gz"
-    name: "ncurses"
-    ver:  "5.9"
-    ext:  "tar.gz"
-  mpc:
-    <<:   *defaults
-    url:  "http://www.multiprecision.org/mpc/download/mpc-1.0.1.tar.gz"
-    name: "mpc"
-    ver:  "1.0.1"
-    ext:  "tar.gz"
-  mpfr:
-    <<:   *defaults
-    url:  "http://www.mpfr.org/mpfr-3.1.2/mpfr-3.1.2.tar.xz"
-    name: "mpfr"
-    ver:  "3.1.2"
-    ext:  "tar.xz"
-  stow:
-    <<:   *defaults
-    url:  "http://ftp.gnu.org/gnu/stow/stow-2.2.0.tar.bz2"
-    name: "stow"
-    ver:  "2.2.0"
-    ext:  "tar.bz2"
-  tmux:
-    <<:   *defaults
-    url:  "http://sourceforge.net/projects/tmux/files/tmux/tmux-1.8/tmux-1.8.tar.gz"
-    name: "tmux"
-    ver:  "1.8"
-    ext:  "tar.gz"
+# RVM::FW Config
+rvm_fw:     yes # no
+rvm_fw_url: "http://rvm-fw.slkdemos.com"  # ""

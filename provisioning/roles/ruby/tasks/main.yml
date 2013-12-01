@@ -1,0 +1,25 @@
+---
+###############
+# Install RVM #
+###############
+
+#################
+# Requirements: #
+# * curl        #
+#################
+
+# Detect RVM's presence
+- stat: path={{HOME.stdout}}/.rvm/bin/rvm
+  register: rvm_bin
+
+- name: Install User RVM normally
+  when: rvm_fw == False and rvm_bin.stat.exists == false
+  shell: \curl -L https://get.rvm.io | bash
+  register: rvm_installed
+  changed_when: rvm_installed.rc != 0
+
+- name: Install User RVM via RVM::FW
+  when: rvm_fw == True and rvm_bin.stat.exists == false
+  shell: \curl {{rvm_fw_url}}/releases/rvm-install-latest | bash
+  register: rvm_installed
+  changed_when: rvm_installed.rc != 0
