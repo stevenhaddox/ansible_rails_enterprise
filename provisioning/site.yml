@@ -1,5 +1,5 @@
 ---
-# This playbook deploys the whole infrastructure stack for this site.
+# This playbook deploys the whole infrastructure stack for this application
 
 #  Uncomment this playbook if you need to debug basic user information
 #- name: Verify who's running commands via debug
@@ -18,6 +18,15 @@
   roles:
     - common
 
+- name: Setup the Ruby environment
+  vars_files:
+  - group_vars/all.yml
+  hosts: ruby:rails
+  sudo_user: "{{sysadmin}}"
+  sudo: yes
+  roles:
+    - ruby
+
 #- name: Setup the webserver infrastructure
 #  hosts: webservers
 #  sudo_user: "{{sysadmin}}"
@@ -26,24 +35,15 @@
 #    ssl_passphrase: "Please enter the passphrase for the SSL certificate"
 #  roles:
 #    - web
-#
+
 #- name: Setup the DB infrastructure
 #  hosts: dbservers
 #  sudo_user: "{{sysadmin}}"
-#  user:
-#  roles:
-#    - db
-#
-#- name: Setup the Ruby environment
-#  hosts: ruby&rails
-#  sudo_user: "{{sysadmin}}"
-#  user:
-#  roles:
-#    - rails
-#
+#  user: #  roles: #    - db
+
 #- name: Setup the Rails environment
 #  hosts: rails
 #  sudo_user: "{{sysadmin}}"
-#  user:
+#  sudo: yes
 #  roles:
 #    - rails
