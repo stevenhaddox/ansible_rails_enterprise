@@ -19,8 +19,8 @@ rvm_fw:
     - libyaml
     - zlib    --verify-downloads 1
     - readline
-#    - openssl # Fix rc 1 being thrown by ssl cert issue
     - iconv
     - libxml2 --verify-downloads 1
     - libxslt --verify-downloads 1
     - ncurses --verify-downloads 1
+#    - openssl # Fix rc 1 being thrown by ssl cert issue

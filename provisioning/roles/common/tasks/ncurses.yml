@@ -39,4 +39,3 @@
   shell: "{{src_bash}} ncurses5-config --help"
   register: ncurses_config
   changed_when: ncurses_config.rc != 0
-  failed_when: ncurses_config.rc  != 0
