@@ -49,9 +49,9 @@ src:
     ext:  "tar.gz"
   openssl:
     <<:   *defaults
-    url:  "ftp://ftp.openssl.org/source/openssl-1.0.1e.tar.gz"
+    url:  "ftp://ftp.openssl.org/source/openssl-1.0.1c.tar.gz"
     name: "openssl"
-    ver:  "1.0.1e"
+    ver:  "1.0.1c"
     ext:  "tar.gz"
   stow:
     <<:   *defaults
