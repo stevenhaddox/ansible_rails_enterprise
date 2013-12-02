@@ -39,15 +39,13 @@
     mkdir -p {{STOW_PATH}}/{{src_folder.stdout}}/bin;
     cp tmux {{STOW_PATH}}/{{src_folder.stdout}}/bin;
     cd {{STOW_PATH}};
-    stow {{src_folder.stdout}};
-    '
+    stow {{src_folder.stdout}};'
   notify:
     - source bash
 
 - shell: "{{src_bash}} tmux -V"
   register: tmux_version
   changed_when: tmux_version.rc != 0
-  failed_when:  tmux_version.rc != 0
 
 - name: Display tmux version
   debug: msg="{{tmux_version.stdout}}"

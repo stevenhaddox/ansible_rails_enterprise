@@ -73,7 +73,7 @@
 
 - shell: "{{src_bash}} stow --version"
   register: stow_version
-  changed_when: "stow_version.rc != 0"
+  changed_when: stow_version.rc != 0
 
 - name: Display stow version
   debug: msg="{{stow_version.stdout}}"
