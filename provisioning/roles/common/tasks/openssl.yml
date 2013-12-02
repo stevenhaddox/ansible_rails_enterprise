@@ -24,23 +24,25 @@
 
 - name: Install openssl
   when: openssl_bin.stat.exists == false
+  register: openssl_install
   shell:
     "{{src_bash}}
     cd {{SRC_PATH}};
     tar -xzf {{src_file_name.stdout}};
     cd {{src_folder.stdout}};
-    ./config --prefix={{STOW_PATH}}/{{src_folder.stdout}};
+    ./config --prefix={{STOW_PATH}}/{{src_folder.stdout}} \
+      --openssldir=ssl --libdir=lib shared;
     make;
     make install prefix={{STOW_PATH}}/{{src_folder.stdout}};
     cd {{STOW_PATH}};
     stow {{src_folder.stdout}};
     creates {{STOW_PATH}}/../bin/openssl;
     "
+  ignore_errors: true
 
-- name: Verify openssl installed properly
-  shell: "{{src_bash}} openssl --version"
+- shell: "{{src_bash}} openssl version"
   register: openssl_version
-  changed_when: openssl.rc != 0
+  changed_when: openssl_version.rc != 0
 
-- name: Display OpenSSL Version
+- name: Display openssl version
   debug: msg="{{openssl_version.stdout}}"

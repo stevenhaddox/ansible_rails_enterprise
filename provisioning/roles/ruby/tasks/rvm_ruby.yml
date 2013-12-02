@@ -1,10 +1,10 @@
 # Install Specified Ruby
-- stat: path={{HOME.stdout}}/.rvm/rubies/{{rvm_fw.ruby}}/bin/ruby
+- stat: path={{HOME.stdout}}/.rvm/rubies/{{ruby.version}}/bin/ruby
   register: ruby_bin
 
 - name: Install Ruby
   when: ruby_bin.stat.exists == False
-  shell: "{{src_bash}} rvm install {{rvm_fw.ruby}} --with-opt-dir={{HOME.stdout}}/.rvm/usr --verify-downloads 1 creates={{HOME.stdout}}/.rvm/rubies/{{rvm_fw.ruby}}"
+  shell: "{{src_bash}} rvm install {{ruby.version}} --with-opt-dir={{HOME.stdout}}/.rvm/usr --verify-downloads 1 creates={{HOME.stdout}}/.rvm/rubies/{{ruby.version}}"
   register: ruby_installed
 
 - shell: "{{src_bash}} ruby --version"
@@ -15,7 +15,7 @@
 - name: Set Default Ruby
   when: ruby_test|failed
   # Use bash -l -c to ensure RVM loads as a function to set default Ruby
-  shell: bash -l -c "{{src_bash}} rvm use {{rvm_fw.ruby}} --default"
+  shell: bash -l -c "{{src_bash}} rvm use {{ruby.version}} --default"
   register: default_rvm_ruby
   changed_when: default_rvm_ruby.rc != 0
 
@@ -26,3 +26,35 @@
 # Display Ruby Version
 - name: Display ruby version
   debug: msg="{{ruby_version.stdout}}"
+
+- name: Add Gem Sources
+  when: ruby.gem_sources.add
+  shell: "{{src_bash}} gem sources -a {{item}}"
+  with_items: ruby.gem_sources.add
+  register: gem_src_add_tmp
+  changed_when: gem_src_add_tmp.rc == 0
+
+- name: Remove Gem Sources
+  when: ruby.gem_sources.delete
+  shell: "{{src_bash}} gem sources -r {{item}}"
+  with_items: ruby.gem_sources.delete
+  register: gem_src_del_tmp
+  changed_when: gem_src_del_tmp.rc == 0
+
+- shell: "{{src_bash}} bundle --version"
+  register: bundler_test
+  ignore_errors: yes
+
+- name: Install Bundler
+  when: bundler_test|failed
+  shell: bash -l -c "gem install bundler" creates={{HOME.stdout}}/.rvm/bin/bundle
+  register: bundler_installed
+  changed_when: bundler_installed.rc != 0
+  ignore_errors: true
+
+- shell: bash -l -c "bundle --version"
+  register: bundler_version
+  changed_when: bundler_version.rc != 0
+
+- name: Display Bundler version
+  debug: msg={{bundler_version.stdout_lines}}
