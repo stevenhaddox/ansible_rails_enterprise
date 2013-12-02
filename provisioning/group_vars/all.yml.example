@@ -15,5 +15,12 @@ rvm_fw:
   enabled: yes # no
   url: "http://rvm-fw.slkdemos.com"  # ""
   ruby: "ruby-2.0.0-p353"
-
-
+  packages:
+    - libyaml
+    - zlib    --verify-downloads 1
+    - readline
+#    - openssl # Fix rc 1 being thrown by ssl cert issue
+    - iconv
+    - libxml2 --verify-downloads 1
+    - libxslt --verify-downloads 1
+    - ncurses --verify-downloads 1

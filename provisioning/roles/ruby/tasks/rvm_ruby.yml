@@ -1,0 +1,28 @@
+# Install Specified Ruby
+- stat: path={{HOME.stdout}}/.rvm/rubies/{{rvm_fw.ruby}}/bin/ruby
+  register: ruby_bin
+
+- name: Install Ruby
+  when: ruby_bin.stat.exists == False
+  shell: "{{src_bash}} rvm install {{rvm_fw.ruby}} --with-opt-dir={{HOME.stdout}}/.rvm/usr --verify-downloads 1 creates={{HOME.stdout}}/.rvm/rubies/{{rvm_fw.ruby}}"
+  register: ruby_installed
+
+- shell: "{{src_bash}} ruby --version"
+  register: ruby_test
+  changed_when: False
+  ignore_errors: yes
+
+- name: Set Default Ruby
+  when: ruby_test|failed
+  # Use bash -l -c to ensure RVM loads as a function to set default Ruby
+  shell: bash -l -c "{{src_bash}} rvm use {{rvm_fw.ruby}} --default"
+  register: default_rvm_ruby
+  changed_when: default_rvm_ruby.rc != 0
+
+- shell: "{{src_bash}} ruby --version"
+  register: ruby_version
+  changed_when: ruby_version.rc != 0
+
+# Display Ruby Version
+- name: Display ruby version
+  debug: msg="{{ruby_version.stdout}}"
