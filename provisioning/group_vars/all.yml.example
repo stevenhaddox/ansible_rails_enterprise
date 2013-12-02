@@ -16,11 +16,11 @@ rvm_fw:
   url: "http://rvm-fw.slkdemos.com"  # ""
   ruby: "ruby-2.0.0-p353"
   packages:
-    - libyaml
-    - zlib    --verify-downloads 1
-    - readline
-    - iconv
-    - libxml2 --verify-downloads 1
-    - libxslt --verify-downloads 1
-    - ncurses --verify-downloads 1
-#    - openssl # Fix rc 1 being thrown by ssl cert issue
+    - libyaml creates={{HOME.stdout}}/.rvm/usr/lib/libyaml.a
+    - zlib    --verify-downloads 1 creates={{HOME.stdout}}/.rvm/usr/lib/libz.so
+    - readline creates={{HOME.stdout}}/.rvm/usr/lib/libreadline.so
+    - iconv creates={{HOME.stdout}}/.rvm/usr/lib/libiconv.so
+    - libxml2 --verify-downloads 1 creates={{HOME.stdout}}/.rvm/usr/lib/libxml2.so
+    - libxslt --verify-downloads 1 creates={{HOME.stdout}}/.rvm/usr/lib/libxslt.so
+    - ncurses --verify-downloads 1 creates={{HOME.stdout}}/.rvm/usr/lib/libncurses.so
+#    - openssl # TODO: rc 1 being thrown by ssl cert issue
