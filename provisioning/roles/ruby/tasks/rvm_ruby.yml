@@ -31,18 +31,19 @@
   when: ruby.gem_sources.add
   shell: "{{src_bash}} gem sources -a {{item}}"
   with_items: ruby.gem_sources.add
-  register: gem_src_add_tmp
-  changed_when: gem_src_add_tmp.rc == 0
+  register: gem_src_add
+  changed_when: gem_src_add.rc == 0
 
 - name: Remove Gem Sources
   when: ruby.gem_sources.delete
   shell: "{{src_bash}} gem sources -r {{item}}"
   with_items: ruby.gem_sources.delete
-  register: gem_src_del_tmp
-  changed_when: gem_src_del_tmp.rc == 0
+  register: gem_src_del
+  changed_when: "'not present' not in gem_src_del.stdout or gem_src_del|failed"
 
 - shell: "{{src_bash}} bundle --version"
   register: bundler_test
+  changed_when: False
   ignore_errors: yes
 
 - name: Install Bundler
