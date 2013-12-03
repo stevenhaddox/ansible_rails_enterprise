@@ -1,0 +1,46 @@
+################
+# Install pcre #
+################
+
+#################
+# Requirements: #
+# * gcc-c++     #
+#################
+
+- { include: set_src_vars.yml, package: "{{src.pcre}}" }
+
+# Detect pcre
+- stat: path={{STOW_PATH}}/../bin/pcre-config
+  register: pcre_config
+  changed_when: pcre_config.stat.exists == false
+
+- name: Create pcre src directory
+  when: pcre_config.stat.exists == false
+  command: mkdir -p {{SRC_PATH}}/{{src_folder.stdout}} creates={{SRC_PATH}}/{{src_folder.stdout}}
+
+- name: Copy pcre src file to remote node
+  when: pcre_config.stat.exists == false
+#  unarchive: src={{LOCAL_SRC_PATH}}/{{src_file_name.stdout}} dest={{SRC_PATH}}/{{src_folder.stdout}}
+  copy: src={{LOCAL_SRC_PATH}}/{{src_file_name.stdout}} dest={{SRC_PATH}}/{{src_file_name.stdout}} owner={{sysadmin}} mode=0644
+
+- name: Install pcre
+  when: pcre_config.stat.exists == false
+  shell:
+    "{{src_bash}}
+    cd {{SRC_PATH}};
+    tar -xzf {{src_file_name.stdout}};
+    cd {{src_folder.stdout}};
+    ./configure --prefix={{STOW_PATH}}/{{src_folder.stdout}};
+    make;
+    make install prefix={{STOW_PATH}}/{{src_folder.stdout}};
+    cd {{STOW_PATH}};
+    stow {{src_folder.stdout}};
+    creates={{STOW_PATH}}/../bin/pcre-config;"
+
+# Verify pcre installed
+- shell: "{{src_bash}} pcre-config --version"
+  register: pcre_version
+  changed_when: pcre_version.rc != 0
+
+- name: Display pcre version
+  debug: msg="{{pcre_version.stdout}}"

@@ -27,17 +27,18 @@
   roles:
     - ruby
 
-#- name: Setup the webserver infrastructure
-#  hosts: webservers
-#  sudo_user: "{{sysadmin}}"
-#  user:
+- name: Setup the webserver infrastructure
+  hosts: web
+  sudo_user: "{{sysadmin}}"
+  vars_files:
+  - group_vars/all.yml
 #  vars_prompt:
 #    ssl_passphrase: "Please enter the passphrase for the SSL certificate"
-#  roles:
-#    - web
+  roles:
+    - web
 
 #- name: Setup the DB infrastructure
-#  hosts: dbservers
+#  hosts: db
 #  sudo_user: "{{sysadmin}}"
 #  user: #  roles: #    - db
 
