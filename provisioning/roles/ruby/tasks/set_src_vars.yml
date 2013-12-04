@@ -1,1 +1,9 @@
-../../common/tasks/set_src_vars.yml
+# Set src filename
+- name: Set source file & directory name
+  command: echo "{{package.prefix}}{{package.name}}-{{package.ver}}{{package.suffix}}.{{package.ext}}"
+  register: src_file_name
+  changed_when: false
+
+- command: echo "{{package.prefix}}{{package.name}}-{{package.ver}}{{package.suffix}}"
+  register: src_folder
+  changed_when: false
