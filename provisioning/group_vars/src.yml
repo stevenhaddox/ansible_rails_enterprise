@@ -1,4 +1,8 @@
-# Package vars
+---
+################
+# Package vars #
+################
+
 src:
   defaults: &defaults
     custom_folder: False
@@ -65,4 +69,55 @@ src:
     url:  "http://sourceforge.net/projects/tmux/files/tmux/tmux-1.8/tmux-1.8.tar.gz"
     name: "tmux"
     ver:  "1.8"
+    ext:  "tar.gz"
+# Apache packages
+  apr:
+    <<:   *defaults
+    url:  "http://mirror.cc.columbia.edu/pub/software/apache//apr/apr-1.5.0.tar.bz2"
+    name: "apr"
+    ver:  "1.5.0"
+    ext:  "tar.bz2"
+  apr_util:
+    <<:   *defaults
+    url:  "http://mirror.cc.columbia.edu/pub/software/apache//apr/apr-util-1.5.3.tar.bz2"
+    name: "apr-util"
+    ver:  "1.5.3"
+    ext:  "tar.bz2"
+  httpd:
+    <<:   *defaults
+    url:  "http://www.apache.org/dist/httpd/httpd-2.4.7.tar.bz2"
+    name: "httpd"
+    ver:  "2.4.7"
+    ext:  "tar.bz2"
+  nginx:
+    <<:   *defaults
+    url:  "http://nginx.org/download/nginx-1.5.7.tar.gz"
+    name: "nginx"
+    ver:  "1.5.7"
+    ext:  "tar.gz"
+  pcre:
+    <<:   *defaults
+    url:  "ftp://ftp.csx.cam.ac.uk/pub/software/programming/pcre/pcre-8.33.tar.gz"
+    name: "pcre"
+    ver:  "8.33"
+    ext:  "tar.gz"
+# Python packages
+  bzip2:
+    <<:   *defaults
+    url:  "http://www.bzip.org/1.0.6/bzip2-1.0.6.tar.gz"
+    name: "bzip2"
+    ver:  "1.0.6"
+    ext:  "tar.gz"
+  python:
+    <<:   *defaults
+    url:  "http://python.org/ftp/python/2.7.6/Python-2.7.6.tgz"
+    name: "Python"
+    ver:  "2.7.6"
+    ext:  "tgz"
+# Node.js packages
+  node:
+    <<:   *defaults
+    url:  "http://nodejs.org/dist/v0.10.22/node-v0.10.22.tar.gz"
+    name: "node"
+    ver:  "v0.10.22"
     ext:  "tar.gz"
