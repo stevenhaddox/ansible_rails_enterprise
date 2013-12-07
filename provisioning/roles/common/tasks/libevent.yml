@@ -10,13 +10,13 @@
 # Detect libevent
 - stat: path={{STOW_PATH}}/../include/event2
   register: libevent_path
-  changed_when: libevent_path.stat.exists == false
+  changed_when: libevent_path.stat.exists == False
 
 # Upload & extract source
 - { include: upload_src.yml, package: "{{src.libevent}}", pkg_check: "{{libevent_path}}" }
 
 - name: Install libevent
-  when: libevent_path.stat.exists == false
+  when: libevent_path.stat.exists == False
   shell:
     "{{src_bash}}
     cd {{SRC_PATH}}/{{src_folder.stdout}};
@@ -25,10 +25,14 @@
     make install prefix={{STOW_PATH}}/{{src_folder.stdout}};
     cd {{STOW_PATH}};
     stow {{src_folder.stdout}}"
+  register: libevent_install
+  changed_when: libevent_install.rc != 0 or libevent_path.stat.exists == False
 
 - stat: path={{STOW_PATH}}/../lib/libevent_core.a
   register: libevent_core
+  changed_when: libevent_path.stat.exists == False
   failed_when: libevent_core.stat.exists == False
 
-- name: Display libevent core library path
-  debug: msg="{{libevent_core}}"
+- name: Display libevent core symlink source
+  debug: msg="{{libevent_core.stat.lnk_source}}"
+  failed_when: '"{{src.libevent.ver}}" not in libevent_core.stat.lnk_source'

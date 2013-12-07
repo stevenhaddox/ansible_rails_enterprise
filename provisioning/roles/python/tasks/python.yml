@@ -10,13 +10,13 @@
 # Detect python's presence
 - stat: path={{STOW_PATH}}/../bin/python
   register: python_bin
-  changed_when: python_bin.stat.exists == false
+  changed_when: python_bin.stat.exists == False
 
 # Upload & extract source
 - { include: upload_src.yml, package: "{{src.python}}", pkg_check: "{{python_bin}}" }
 
 - name: Install Python
-  when: python_bin.stat.exists == false
+  when: python_bin.stat.exists == False
   shell: '{{src_bash}}
     export CLFLAGS="-fPIC";
     export C_INCLUDE_PATH={{STOW_PATH}}/../include;
@@ -30,19 +30,21 @@
     cd {{STOW_PATH}};
     stow {{src_folder.stdout}};'
   register: python_install
+  changed_when: python_install.rc != 0 or python_bin.stat.exists == False
 
 - shell: "{{src_bash}} python -V"
   register: python_version
-  changed_when: python_version.rc != 0
+  changed_when: python_version.rc != 0 or python_bin.stat.exists == False
 
-- debug: msg="{{python_version.stdout}}"
-
-- name: Display Python version
-  debug: msg="{{python_version.stdout}}"
+- name: Display Python version (from stderr)
+  debug: msg="{{python_version.stderr}}"
+  changed_when: python_version.rc != 0 or python_bin.stat.exists == False
+  failed_when: '"{{src.python.ver}}" not in python_version.stderr'
 
 - name: Verify bzip2 module works
   shell: '{{src_bash}} python -c "import bz2; print bz2.__doc__"'
   register: py_bzip2_result
-  changed_when: "'python bz2 module' not in py_bzip2_result.stdout"
+  changed_when: python_bin.stat.exists == False
 
 - debug: msg="{{py_bzip2_result.stdout}}"
+  failed_when: '"The python bz2 module" not in py_bzip2_result.stdout'

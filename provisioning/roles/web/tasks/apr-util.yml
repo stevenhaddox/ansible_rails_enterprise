@@ -10,13 +10,13 @@
 # Detect apr-util
 - stat: path={{STOW_PATH}}/../lib/libaprutil-1.so
   register: apr_util_lib
-  changed_when: apr_util_lib.stat.exists == false
+  changed_when: apr_util_lib.stat.exists == False
 
 # Upload & extract source
 - { include: upload_src.yml, package: "{{src.apr_util}}", pkg_check: "{{apr_util_lib}}" }
 
 - name: Install apr-util
-  when: apr_util_lib.stat.exists == false
+  when: apr_util_lib.stat.exists == False
   shell:
     "{{src_bash}}
     cd {{SRC_PATH}}/{{src_folder.stdout}};
@@ -27,11 +27,14 @@
     cd {{STOW_PATH}};
     stow {{src_folder.stdout}};
     creates={{STOW_PATH}}/../bin/apr-util-1;"
+  register: apr_util_install
+  changed_when: apr_util_install.rc != 0 or apr_util_lib.stat.exists == False
 
     # Verify apr-util installed
 - shell: "{{src_bash}} apu-1-config --version"
   register: apr_util_version
-  changed_when: apr_util_version.rc != 0
+  changed_when: apr_util_version.rc != 0 or apr_util_lib.stat.exists == False
 
 - name: Display apr-util version
   debug: msg="{{apr_util_version.stdout}}"
+  failed_when: '"{{src.apr_util.ver}}" not in apr_util_version.stdout'

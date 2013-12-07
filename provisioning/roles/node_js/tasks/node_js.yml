@@ -1,7 +1,7 @@
 # Detect node's presence
 - stat: path={{STOW_PATH}}/../bin/node
   register: node_bin
-  changed_when: node_bin.stat.exists == false
+  changed_when: node_bin.stat.exists == False
 
 # Upload & extract source
 - { include: upload_src.yml, package: "{{src.node}}", pkg_check: "{{node_bin}}" }
@@ -16,11 +16,12 @@
          cd {{STOW_PATH}};
          stow {{src_folder.stdout}};'
   register: node_install
-  changed_when: node_install.rc != 0
+  changed_when: node_install.rc != 0 or node_bin.stat.exists == False
 
 - shell: "{{src_bash}} node --version"
-  register: node
-  changed_when: node.rc != 0
+  register: node_version
+  changed_when: node_version.rc != 0 or node_bin.stat.exists == False
 
 - name: Display node.js version
-  debug: msg="{{node.stdout}}"
+  debug: msg="{{node_version.stdout}}"
+  failed_when: '"{{src.node.ver}}" not in node_version.stdout'

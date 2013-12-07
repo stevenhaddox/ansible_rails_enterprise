@@ -10,13 +10,13 @@
 # Detect apr
 - stat: path={{STOW_PATH}}/../bin/apr-1-config
   register: apr_bin
-  changed_when: apr_bin.stat.exists == false
+  changed_when: apr_bin.stat.exists == False
 
 # Upload & extract source
 - { include: upload_src.yml, package: "{{src.apr}}", pkg_check: "{{apr_bin}}" }
 
 - name: Install apr
-  when: apr_bin.stat.exists == false
+  when: apr_bin.stat.exists == False
   shell:
     "{{src_bash}}
     cd {{SRC_PATH}}/{{src_folder.stdout}};
@@ -26,11 +26,14 @@
     cd {{STOW_PATH}};
     stow {{src_folder.stdout}};
     creates={{STOW_PATH}}/../bin/apr-1-config;"
+  register: apr_install
+  changed_when: apr_install.rc !=0 or apr_bin.stat.exists == False
 
 # Verify apr installed
 - shell: "{{src_bash}} apr-1-config --version"
   register: apr_version
-  changed_when: apr_version.rc != 0
+  changed_when: apr_version.rc != 0 or apr_bin.stat.exists == False
 
 - name: Display apr version
   debug: msg="{{apr_version.stdout}}"
+  failed_when: '"{{src.apr.ver}}" not in apr_version.stdout'

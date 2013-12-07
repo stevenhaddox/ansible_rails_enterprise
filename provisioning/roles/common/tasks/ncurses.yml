@@ -25,8 +25,13 @@
     make install prefix={{STOW_PATH}}/{{src_folder.stdout}};
     cd {{STOW_PATH}};
     stow {{src_folder.stdout}}"
+  register: ncurses_install
+  changed_when: ncurses_install.rc != 0 or ncurses_bin.stat.exists == False
 
-- name:  Verify ncurses installed properly
-  shell: "{{src_bash}} ncurses5-config --help"
+- shell: "{{src_bash}} ncurses5-config --prefix"
   register: ncurses_config
-  changed_when: ncurses_config.rc != 0
+  changed_when: ncurses_config.rc != 0 or ncurses_bin.stat.exists == False
+
+- name: Display ncurses-config
+  debug: msg="{{ncurses_config.stdout}}"
+  failed_when: '"{{src.ncurses.ver}}" not in ncurses_config.stdout'
