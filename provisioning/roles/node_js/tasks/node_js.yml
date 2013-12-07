@@ -1,0 +1,27 @@
+# Detect node's presence
+- stat: path={{STOW_PATH}}/../bin/node
+  register: node_bin
+  changed_when: node_bin.stat.exists == False
+
+# Upload & extract source
+- { include: upload_src.yml, package: "{{src.node}}", pkg_check: "{{node_bin}}" }
+
+- name: Setup & compile node
+  when: node_bin.stat.exists == False
+  shell: '{{src_bash}}
+         cd {{SRC_PATH}}/{{src_folder.stdout}};
+         ./configure --prefix={{STOW_PATH}}/{{src_folder.stdout}};
+         make;
+         make install PREFIX={{STOW_PATH}}/{{src_folder.stdout}};
+         cd {{STOW_PATH}};
+         stow {{src_folder.stdout}};'
+  register: node_install
+  changed_when: node_install.rc != 0 or node_bin.stat.exists == False
+
+- shell: "{{src_bash}} node --version"
+  register: node_version
+  changed_when: node_version.rc != 0 or node_bin.stat.exists == False
+
+- name: Display node.js version
+  debug: msg="{{node_version.stdout}}"
+  failed_when: '"{{src.node.ver}}" not in node_version.stdout'

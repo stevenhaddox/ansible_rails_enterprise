@@ -6,36 +6,32 @@
 # Requirements:   #
 # * gcc-c++       #
 ###################
-- { include: set_src_vars.yml, package: "{{src.ncurses}}" }
 
 # Detect ncurses
 - stat: path={{STOW_PATH}}/../share/terminfo
   register: ncurses_bin
   changed_when: ncurses_bin.stat.exists == false
 
-- name: Create ncurses src directory
-  when: ncurses_bin.stat.exists == false
-  command: mkdir -p {{SRC_PATH}}/{{src_folder.stdout}} creates={{SRC_PATH}}/{{src_folder.stdout}}
-
-- name: Copy ncurses src file to remote node
-  when: ncurses_bin.stat.exists == false
-#  unarchive: src={{LOCAL_SRC_PATH}}/{{src_file_name.stdout}} dest={{SRC_PATH}}/{{src_folder.stdout}}
-  copy: src={{LOCAL_SRC_PATH}}/{{src_file_name.stdout}} dest={{SRC_PATH}}/{{src_file_name.stdout}} owner={{sysadmin}} mode=0644
+# Upload & extract source
+- { include: upload_src.yml, package: "{{src.ncurses}}", pkg_check: "{{ncurses_bin}}" }
 
 - name: Install ncurses
   when: ncurses_bin.stat.exists == false
   shell:
     "{{src_bash}}
-    cd {{SRC_PATH}};
-    tar -xzf {{src_file_name.stdout}};
-    cd {{src_folder.stdout}};
+    cd {{SRC_PATH}}/{{src_folder.stdout}};
     ./configure --prefix={{STOW_PATH}}/{{src_folder.stdout}};
     make;
     make install prefix={{STOW_PATH}}/{{src_folder.stdout}};
     cd {{STOW_PATH}};
     stow {{src_folder.stdout}}"
+  register: ncurses_install
+  changed_when: ncurses_install.rc != 0 or ncurses_bin.stat.exists == False
 
-- name:  Verify ncurses installed properly
-  shell: "{{src_bash}} ncurses5-config --help"
+- shell: "{{src_bash}} ncurses5-config --prefix"
   register: ncurses_config
-  changed_when: ncurses_config.rc != 0
+  changed_when: ncurses_config.rc != 0 or ncurses_bin.stat.exists == False
+
+- name: Display ncurses-config
+  debug: msg="{{ncurses_config.stdout}}"
+  failed_when: '"{{src.ncurses.ver}}" not in ncurses_config.stdout'

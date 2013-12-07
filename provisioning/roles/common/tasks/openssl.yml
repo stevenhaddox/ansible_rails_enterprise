@@ -6,43 +6,35 @@
 # Requirements:   #
 # * gcc-c++       #
 ###################
-- { include: set_src_vars.yml, package: "{{src.openssl}}" }
 
-# Detect ncurses
+# Detect openssl
 - stat: path={{STOW_PATH}}/../bin/openssl
   register: openssl_bin
-  changed_when: openssl_bin.stat.exists == false
+  changed_when: openssl_bin.stat.exists == False
 
-- name: Create openssl src directory
-  when: openssl_bin.stat.exists == false
-  command: mkdir -p {{SRC_PATH}}/{{src_folder.stdout}} creates={{SRC_PATH}}/{{src_folder.stdout}}
-
-- name: Copy openssl src file to remote node
-  when: openssl_bin.stat.exists == false
-#  unarchive: src={{LOCAL_SRC_PATH}}/{{src_file_name.stdout}} dest={{SRC_PATH}}/{{src_folder.stdout}}
-  copy: src={{LOCAL_SRC_PATH}}/{{src_file_name.stdout}} dest={{SRC_PATH}}/{{src_file_name.stdout}} owner={{sysadmin}} mode=0644
+# Upload & extract source
+- { include: upload_src.yml, package: "{{src.openssl}}", pkg_check: "{{openssl_bin}}" }
 
 - name: Install openssl
-  when: openssl_bin.stat.exists == false
-  register: openssl_install
+  when: openssl_bin.stat.exists == False
   shell:
     "{{src_bash}}
-    cd {{SRC_PATH}};
-    tar -xzf {{src_file_name.stdout}};
-    cd {{src_folder.stdout}};
+    cd {{SRC_PATH}}/{{src_folder.stdout}};
     ./config --prefix={{STOW_PATH}}/{{src_folder.stdout}} \
       --openssldir=ssl --libdir=lib shared;
     make;
     make install prefix={{STOW_PATH}}/{{src_folder.stdout}};
     cd {{STOW_PATH}};
     stow {{src_folder.stdout}};
-    creates {{STOW_PATH}}/../bin/openssl;
-    "
-  ignore_errors: true
+    creates {{STOW_PATH}}/../bin/openssl;"
+  register: openssl_install
+  changed_when: openssl_install.rc != 0 or openssl_bin.stat.exists == False
+  ignore_errors: True
 
 - shell: "{{src_bash}} openssl version"
   register: openssl_version
-  changed_when: openssl_version.rc != 0
+  changed_when: openssl_version.rc != 0 or openssl_bin.stat.exists == False
 
 - name: Display openssl version
   debug: msg="{{openssl_version.stdout}}"
+  failed_when: '"{{src.openssl.ver}}" not in openssl_version.stdout'

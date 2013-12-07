@@ -1,6 +1,6 @@
 ---
 # Control Machine Variables
-LOCAL_ANSIBLE_ROOT: "../../../../provisioning"
+LOCAL_ANSIBLE_ROOT: "~/Sites/work/ansible_provisioning/provisioning"
 LOCAL_SRC_PATH: "{{LOCAL_ANSIBLE_ROOT}}/src_files"
 
 # Remote Node Variables
