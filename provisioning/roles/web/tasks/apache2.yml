@@ -4,37 +4,26 @@
 
 ###################
 # Requirements:   #
-# * apr           #
-# * apr-util      #
 # * gcc-c++       #
 ###################
 
 - include: apr.yml
 - include: apr-util.yml
 - include: pcre.yml
-- { include: set_src_vars.yml, package: "{{src.httpd}}" }
 
 # Detect httpd
 - stat: path={{STOW_PATH}}/../bin/httpd
   register: httpd_bin
   changed_when: httpd_bin.stat.exists == false
 
-- name: Create httpd src directory
-  when: httpd_bin.stat.exists == false
-  command: mkdir -p {{SRC_PATH}}/{{src_folder.stdout}} creates={{SRC_PATH}}/{{src_folder.stdout}}
-
-- name: Copy httpd src file to remote node
-  when: httpd_bin.stat.exists == false
-#  unarchive: src={{LOCAL_SRC_PATH}}/{{src_file_name.stdout}} dest={{SRC_PATH}}/{{src_folder.stdout}}
-  copy: src={{LOCAL_SRC_PATH}}/{{src_file_name.stdout}} dest={{SRC_PATH}}/{{src_file_name.stdout}} owner={{sysadmin}} mode=0644
+# Upload & extract source
+- { include: upload_src.yml, package: "{{src.httpd}}", pkg_check: "{{httpd_bin}}" }
 
 - name: Install httpd
   when: httpd_bin.stat.exists == false
   shell:
     "{{src_bash}}
-    cd {{SRC_PATH}};
-    tar -xjf {{src_file_name.stdout}};
-    cd {{src_folder.stdout}};
+    cd {{SRC_PATH}}/{{src_folder.stdout}};
     ./configure --prefix={{STOW_PATH}}/{{src_folder.stdout}};
     make;
     make install prefix={{STOW_PATH}}/{{src_folder.stdout}};

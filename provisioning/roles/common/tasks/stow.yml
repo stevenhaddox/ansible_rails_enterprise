@@ -45,24 +45,14 @@
 - stat: path={{STOW_PATH}}/../bin/stow
   register: stow_bin
 
-- { include: set_src_vars.yml, package: "{{src.stow}}" }
-
-- name: Create stow src directory
-  when: stow_bin.stat.exists == false
-  command: mkdir -p {{SRC_PATH}}/{{src_folder.stdout}} creates={{SRC_PATH}}/{{src_folder.stdout}}
-
-- name: Copy stow's source file to remote node
-  when: stow_bin.stat.exists == false
-#  unarchive: src={{LOCAL_SRC_PATH}}/{{src_file_name.stdout}} dest={{SRC_PATH}}/{{src_folder.stdout}}
-  copy: src={{LOCAL_SRC_PATH}}/{{src_file_name.stdout}} dest={{SRC_PATH}}/{{src_file_name.stdout}} owner={{sysadmin}} mode=0644
+# Upload & extract source
+- { include: upload_src.yml, package: "{{src.stow}}", pkg_check: "{{stow_bin}}" }
 
 - name: Install GNU Stow
   when: stow_bin.stat.exists == false
   shell:
     "{{src_bash}}
-    cd {{SRC_PATH}};
-    tar -xjf {{src_file_name.stdout}};
-    cd {{src_folder.stdout}};
+    cd {{SRC_PATH}}/{{src_folder.stdout}};
     ./configure --prefix={{STOW_PATH}}/{{src_folder.stdout}};
     make;
     make install prefix={{STOW_PATH}}/{{src_folder.stdout}};

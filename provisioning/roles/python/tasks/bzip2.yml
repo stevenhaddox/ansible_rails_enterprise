@@ -1,0 +1,28 @@
+# Detect bzip2's presence
+- stat: path={{STOW_PATH}}/../bin/bzip2
+  register: bzip2_bin
+  changed_when: bzip2_bin.stat.exists == false
+
+# Upload & extract source
+- { include: upload_src.yml, package: "{{src.bzip2}}", pkg_check: "{{bzip2_bin}}" }
+
+- name: Setup & compile bzip2
+  when: bzip2_bin.stat.exists == False
+  shell: '{{src_bash}}
+         cd {{SRC_PATH}}/{{src_folder.stdout}};
+         export CFLAGS="-fPIC";
+         make -f Makefile-libbz2_so;
+         make;
+         make install PREFIX={{STOW_PATH}}/{{src_folder.stdout}};
+         cp libbz2.so.{{src.bzip2.ver}} {{STOW_PATH}}/{{src_folder.stdout}}/lib;
+         cd {{STOW_PATH}};
+         stow {{src_folder.stdout}};'
+  register: bzip2_install
+  changed_when: bzip2_install.rc != 0
+
+- shell: "{{src_bash}} which bzip2"
+  register: bzip2
+  changed_when: bzip2.rc != 0
+
+- name: Display bzip2 path
+  debug: msg="{{bzip2.stdout}}"

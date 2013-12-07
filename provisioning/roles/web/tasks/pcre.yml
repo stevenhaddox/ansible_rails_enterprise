@@ -7,21 +7,13 @@
 # * gcc-c++     #
 #################
 
-- { include: set_src_vars.yml, package: "{{src.pcre}}" }
-
 # Detect pcre
 - stat: path={{STOW_PATH}}/../bin/pcre-config
   register: pcre_config
   changed_when: pcre_config.stat.exists == false
 
-- name: Create pcre src directory
-  when: pcre_config.stat.exists == false
-  command: mkdir -p {{SRC_PATH}}/{{src_folder.stdout}} creates={{SRC_PATH}}/{{src_folder.stdout}}
-
-- name: Copy pcre src file to remote node
-  when: pcre_config.stat.exists == false
-#  unarchive: src={{LOCAL_SRC_PATH}}/{{src_file_name.stdout}} dest={{SRC_PATH}}/{{src_folder.stdout}}
-  copy: src={{LOCAL_SRC_PATH}}/{{src_file_name.stdout}} dest={{SRC_PATH}}/{{src_file_name.stdout}} owner={{sysadmin}} mode=0644
+# Upload & extract source
+- { include: upload_src.yml, package: "{{src.pcre}}", pkg_check: "{{pcre_config}}" }
 
 - name: Install pcre
   when: pcre_config.stat.exists == false

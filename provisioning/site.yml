@@ -37,14 +37,17 @@
   roles:
     - web
 
+- name: Setup the Rails environment
+  vars_files:
+  - group_vars/all.yml
+  hosts: rails
+  sudo_user: "{{sysadmin}}"
+  sudo: yes
+  roles:
+    - rails
+
 #- name: Setup the DB infrastructure
 #  hosts: db
 #  sudo_user: "{{sysadmin}}"
-#  user: #  roles: #    - db
-
-#- name: Setup the Rails environment
-#  hosts: rails
-#  sudo_user: "{{sysadmin}}"
-#  sudo: yes
 #  roles:
-#    - rails
+#    - db

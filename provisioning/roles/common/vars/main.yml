@@ -1,7 +1,8 @@
 # Package vars
 src:
   defaults: &defaults
-    custom_folder: false
+    custom_folder: False
+    custom_file_name: False
     prefix: ""
     suffix: ""
   gcc:

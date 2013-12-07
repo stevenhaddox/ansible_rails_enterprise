@@ -6,30 +6,21 @@
 # Requirements:   #
 # * gcc-c++       #
 ###################
-- { include: set_src_vars.yml, package: "{{src.openssl}}" }
 
-# Detect ncurses
+# Detect openssl
 - stat: path={{STOW_PATH}}/../bin/openssl
   register: openssl_bin
   changed_when: openssl_bin.stat.exists == false
 
-- name: Create openssl src directory
-  when: openssl_bin.stat.exists == false
-  command: mkdir -p {{SRC_PATH}}/{{src_folder.stdout}} creates={{SRC_PATH}}/{{src_folder.stdout}}
-
-- name: Copy openssl src file to remote node
-  when: openssl_bin.stat.exists == false
-#  unarchive: src={{LOCAL_SRC_PATH}}/{{src_file_name.stdout}} dest={{SRC_PATH}}/{{src_folder.stdout}}
-  copy: src={{LOCAL_SRC_PATH}}/{{src_file_name.stdout}} dest={{SRC_PATH}}/{{src_file_name.stdout}} owner={{sysadmin}} mode=0644
+# Upload & extract source
+- { include: upload_src.yml, package: "{{src.openssl}}", pkg_check: "{{openssl_bin}}" }
 
 - name: Install openssl
   when: openssl_bin.stat.exists == false
   register: openssl_install
   shell:
     "{{src_bash}}
-    cd {{SRC_PATH}};
-    tar -xzf {{src_file_name.stdout}};
-    cd {{src_folder.stdout}};
+    cd {{SRC_PATH}}/{{src_folder.stdout}};
     ./config --prefix={{STOW_PATH}}/{{src_folder.stdout}} \
       --openssldir=ssl --libdir=lib shared;
     make;

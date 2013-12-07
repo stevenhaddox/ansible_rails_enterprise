@@ -6,29 +6,20 @@
 # Requirements:   #
 # * gcc-c++       #
 ###################
-- { include: set_src_vars.yml, package: "{{src.libevent}}" }
 
 # Detect libevent
 - stat: path={{STOW_PATH}}/../include/event2
   register: libevent_path
   changed_when: libevent_path.stat.exists == false
 
-- name: Create libevent src directory
-  when: libevent_path.stat.exists == false
-  command: mkdir -p {{SRC_PATH}}/{{src_folder.stdout}} creates={{SRC_PATH}}/{{src_folder.stdout}}
-
-- name: Copy libevent src file to remote node
-  when: libevent_path.stat.exists == false
-#  unarchive: src={{LOCAL_SRC_PATH}}/{{src_file_name.stdout}} dest={{SRC_PATH}}/{{src_folder.stdout}}
-  copy: src={{LOCAL_SRC_PATH}}/{{src_file_name.stdout}} dest={{SRC_PATH}}/{{src_file_name.stdout}} owner={{sysadmin}} mode=0644
+# Upload & extract source
+- { include: upload_src.yml, package: "{{src.libevent}}", pkg_check: "{{libevent_path}}" }
 
 - name: Install libevent
   when: libevent_path.stat.exists == false
   shell:
     "{{src_bash}}
-    cd {{SRC_PATH}};
-    tar -xzf {{src_file_name.stdout}};
-    cd {{src_folder.stdout}};
+    cd {{SRC_PATH}}/{{src_folder.stdout}};
     ./configure --prefix={{STOW_PATH}}/{{src_folder.stdout}} --disable-shared;
     make;
     make install prefix={{STOW_PATH}}/{{src_folder.stdout}};

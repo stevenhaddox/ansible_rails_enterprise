@@ -7,29 +7,19 @@
 # * gcc-c++     #
 #################
 
-- { include: set_src_vars.yml, package: "{{src.apr}}" }
-
 # Detect apr
 - stat: path={{STOW_PATH}}/../bin/apr-1-config
   register: apr_bin
   changed_when: apr_bin.stat.exists == false
 
-- name: Create apr src directory
-  when: apr_bin.stat.exists == false
-  command: mkdir -p {{SRC_PATH}}/{{src_folder.stdout}} creates={{SRC_PATH}}/{{src_folder.stdout}}
-
-- name: Copy apr src file to remote node
-  when: apr_bin.stat.exists == false
-#  unarchive: src={{LOCAL_SRC_PATH}}/{{src_file_name.stdout}} dest={{SRC_PATH}}/{{src_folder.stdout}}
-  copy: src={{LOCAL_SRC_PATH}}/{{src_file_name.stdout}} dest={{SRC_PATH}}/{{src_file_name.stdout}} owner={{sysadmin}} mode=0644
+# Upload & extract source
+- { include: upload_src.yml, package: "{{src.apr}}", pkg_check: "{{apr_bin}}" }
 
 - name: Install apr
   when: apr_bin.stat.exists == false
   shell:
     "{{src_bash}}
-    cd {{SRC_PATH}};
-    tar -xjf {{src_file_name.stdout}};
-    cd {{src_folder.stdout}};
+    cd {{SRC_PATH}}/{{src_folder.stdout}};
     ./configure --prefix={{STOW_PATH}}/{{src_folder.stdout}};
     make;
     make install prefix={{STOW_PATH}}/{{src_folder.stdout}};

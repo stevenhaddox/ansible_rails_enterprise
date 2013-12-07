@@ -10,30 +10,19 @@
 - include: ncurses.yml
 - include: libevent.yml
 #
-## Set tmux src filename
-- { include: set_src_vars.yml, package: "{{src.tmux}}" }
-
 # Detect tmux's presence
 - stat: path={{STOW_PATH}}/../bin/tmux
   register: tmux_bin
   changed_when: tmux_bin.stat.exists == false
 
-- name: Create tmux src directory
-  when: tmux_bin.stat.exists == false
-  command: mkdir -p {{SRC_PATH}}/{{src_folder.stdout}} creates={{SRC_PATH}}/{{src_folder.stdout}}
-
-- name: Copy tmux src file to remote node
-  when: tmux_bin.stat.exists == false
-#  unarchive: src={{LOCAL_SRC_PATH}}/{{src_file_name.stdout}} dest={{SRC_PATH}}/{{src_folder.stdout}}
-  copy: src={{LOCAL_SRC_PATH}}/{{src_file_name.stdout}} dest={{SRC_PATH}}/{{src_file_name.stdout}} owner={{sysadmin}} mode=0644
+# Upload & extract source
+- { include: upload_src.yml, package: "{{src.tmux}}", pkg_check: "{{tmux_bin}}" }
 
 - name: Install Tmux
   when: tmux_bin.stat.exists == false
   shell:
     '{{src_bash}}
-    cd {{SRC_PATH}};
-    tar -xzf {{src_file_name.stdout}};
-    cd {{src_folder.stdout}};
+    cd {{SRC_PATH}}/{{src_folder.stdout}};
     ./configure CFLAGS="-I{{STOW_PATH}}/../include -I{{STOW_PATH}}/../include/ncurses" LDFLAGS="-I{{STOW_PATH}}/../lib -L{{STOW_PATH}}/../include/ncurses -L{{STOW_PATH}}/../include" CPPFLAGS="-I{{STOW_PATH}}/../include -I{{STOW_PATH}}/../include/ncurses" LDFLAGS="-static -L{{STOW_PATH}}/../include -L{{STOW_PATH}}/../include/ncurses -L{{STOW_PATH}}/../lib";
     make;
     mkdir -p {{STOW_PATH}}/{{src_folder.stdout}}/bin;

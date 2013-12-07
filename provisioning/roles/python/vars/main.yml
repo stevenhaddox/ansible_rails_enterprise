@@ -1,0 +1,19 @@
+# Package vars
+src:
+  defaults: &defaults
+    custom_folder: False
+    custom_file_name: False
+    prefix: ""
+    suffix: ""
+  bzip2:
+    <<:   *defaults
+    url:  "http://www.bzip.org/1.0.6/bzip2-1.0.6.tar.gz"
+    name: "bzip2"
+    ver:  "1.0.6"
+    ext:  "tar.gz"
+  python:
+    <<:   *defaults
+    url:  "http://python.org/ftp/python/2.7.6/Python-2.7.6.tgz"
+    name: "Python"
+    ver:  "2.7.6"
+    ext:  "tgz"

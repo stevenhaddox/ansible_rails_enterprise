@@ -1,0 +1,7 @@
+---
+################
+# Setup Python #
+################
+
+- include: bzip2.yml
+- include: python.yml
