@@ -21,6 +21,7 @@ httpd:
     port: 8443    # 443
     domain: hostname # "domain.tld", "example.com", "sub.domain.tld", "192.168.0.42"
     admin:  no-reply@hostname.{{internal_tld}} # youremail@yourdomain.tld
+    document_root: "{{STOW_PATH}}/../htdocs"
     ssl:
       certs_path: "{{HOME.stdout}}/certs"
       server_crt: "{{HOME.stdout}}/certs/{{hostname}}.crt"

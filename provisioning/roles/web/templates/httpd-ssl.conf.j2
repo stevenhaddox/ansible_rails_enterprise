@@ -83,7 +83,7 @@ SSLSessionCacheTimeout  300
 <VirtualHost _default_:{{httpd.https.port}}>
 
 #   General setup for the virtual host
-DocumentRoot "{{httpd.paths.htdocs}}/htdocs"
+DocumentRoot "{{httpd.https.document_root}}"
 ServerName {{httpd.https.domain}}:{{httpd.https.port}}
 ServerAdmin {{httpd.https.admin}}
 ErrorLog "{{httpd.paths.logs}}/logs/error_log"
@@ -124,7 +124,7 @@ SSLCertificateKeyFile "{{httpd.https.ssl.server_key}}"
 #   the referenced file can be the same as SSLCertificateFile
 #   when the CA certificates are directly appended to the server
 #   certificate for convenience.
-#SSLCertificateChainFile "/home/sysadmin/opt/stow/httpd-2.4.7/conf/server-ca.crt"
+SSLCertificateChainFile "{{httpd.paths.server_ca}}"
 
 #   Certificate Authority (CA):
 #   Set the CA certificate verification path where to find CA
