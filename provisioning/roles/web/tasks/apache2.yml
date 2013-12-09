@@ -41,3 +41,30 @@
 - name: Display httpd version
   debug: msg="{{httpd_version.stdout}}"
   failed_when: '"{{src.httpd.ver}}" not in httpd_version.stdout'
+
+- name: Create sites-available & sites-enabled directories
+  file: path={{item}} state=directory
+  with_items:
+    - "{{httpd.paths.sites_available}}"
+    - "{{httpd.paths.sites_enabled}}"
+
+- name: Setup Default Port in httpd.conf
+  lineinfile:
+    dest={{httpd.paths.httpd_conf}}
+    backrefs=yes
+    state=present
+    regexp="^Listen 80$"
+    line="Listen {{httpd.port}}"
+#" #TODO: Remove author's hack for vim syntax sanity
+
+- name: Setup vhosts Include
+  lineinfile:
+    dest={{httpd.paths.httpd_conf}}
+    insertafter=EOF
+    state=present
+    regexp="^Include {{httpd.paths.sites_enabled}}$"
+    line="Include {{httpd.paths.sites_enabled}}"
+#" #TODO: Remove author's hack for vim syntax sanity
+
+- name: Replace SSL configuration file with populated version
+  template: src=httpd-ssl.conf.j2 dest={{httpd.paths.conf}}/extra/httpd-ssl.conf backup=yes

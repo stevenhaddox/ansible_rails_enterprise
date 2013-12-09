@@ -6,14 +6,15 @@ LOCAL_SRC_PATH: "{{LOCAL_ANSIBLE_ROOT}}/src_files"
 # Remote Node Variables
 sysadmin:     "sysadmin" # User to install libraries & packages from source
 deployer:     "deployer" # User to deploy Rails applications from
-internal_tld: "dev"
+internal_tld: "dev"      # "com", "net", "org", "pow", etc.
+hostname:     "support.local" # domain.{{internal_tld}}, example.com, localhost, etc.
 STOW_PATH:    "{{HOME.stdout}}/opt/stow"
 SRC_PATH:     "{{HOME.stdout}}/SUPPORT/src"
 src_bash:     "source {{HOME.stdout}}/.bashrc;"
 
 # Ruby Config
 rvm_fw:
-  enabled: yes # no
+  enabled: True # False
   url: "http://rvm-fw.slkdemos.com" # ""
 
 rvm:
@@ -31,7 +32,7 @@ ruby:
   version: "ruby-2.0.0-p353"
   gem_sources:
     add:
-#      - http://ruby.{{internal_tld}}/
+#      - http://gems.support.ruby.{{internal_tld}}/
 #      - http://ruby.{{internal_tld}}/
     delete:
       - http://rubygems.org/

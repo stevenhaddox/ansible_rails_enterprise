@@ -1,0 +1,29 @@
+---
+####################
+# Apache Variables #
+####################
+
+httpd:
+  port:   8080 # 80
+  domain: hostname # "domain.tld", "example.com", "sub.domain.tld", "192.168.0.42"
+  paths:
+    root:            "{{STOW_PATH}}/.."
+    conf:            "{{STOW_PATH}}/../conf"
+    httpd_conf:      "{{STOW_PATH}}/../conf/httpd.conf"
+    sites_enabled:   "{{STOW_PATH}}/../conf/sites-enabled"
+    sites_available: "{{STOW_PATH}}/../conf/sites-available"
+    ssl_conf:        "{{STOW_PATH}}/../conf/extra/httpd-ssl.conf"
+    htdocs:          "{{STOW_PATH}}/../htdocs"
+    logs:            "{{STOW_PATH}}/../logs"
+    server_ca:       "{{STOW_PATH}}/../conf/server-ca.crt"
+  https:
+    enabled: True # False
+    port: 8443    # 443
+    domain: hostname # "domain.tld", "example.com", "sub.domain.tld", "192.168.0.42"
+    admin:  no-reply@hostname.{{internal_tld}} # youremail@yourdomain.tld
+    ssl:
+      certs_path: "{{HOME.stdout}}/certs"
+      server_crt: "{{HOME.stdout}}/certs/{{hostname}}.crt"
+      server_key: "{{HOME.stdout}}/certs/{{hostname}}.key"
+      CA_path:    "{{HOME.stdout}}/certs/CA"
+      CA_cert:    "{{HOME.stdout}}/certs/CA/ca-bundle.crt"
