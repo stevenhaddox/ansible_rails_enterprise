@@ -68,3 +68,6 @@
 
 - name: Replace SSL configuration file with populated version
   template: src=httpd-ssl.conf.j2 dest={{httpd.paths.conf}}/extra/httpd-ssl.conf backup=yes
+
+- name: Symlink server-ca.crt to CA-bundle.crt
+  file: src={{httpd.https.ssl.CA_cert}} dest={{httpd.paths.server_ca}} state=link force=yes
