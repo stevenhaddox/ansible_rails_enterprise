@@ -11,6 +11,7 @@
 
 - name: Initialize all SUPPORT servers
   vars_files:
+  - group_vars/all.yml
   - group_vars/src.yml
   hosts: all
   sudo: yes
@@ -20,6 +21,7 @@
 
 - name: Setup the Ruby environment
   vars_files:
+  - group_vars/all.yml
   - group_vars/src.yml
   hosts: ruby:rails
   sudo_user: "{{sysadmin}}"
@@ -31,6 +33,7 @@
   hosts: web
   sudo_user: "{{sysadmin}}"
   vars_files:
+  - group_vars/all.yml
   - group_vars/src.yml
 #  vars_prompt:
 #    ssl_passphrase: "Please enter the passphrase for the SSL certificate"
@@ -39,6 +42,7 @@
 
 - name: Setup the Rails environment
   vars_files:
+  - group_vars/all.yml
   - group_vars/src.yml
   hosts: rails
   sudo_user: "{{sysadmin}}"

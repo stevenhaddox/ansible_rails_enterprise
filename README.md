@@ -14,10 +14,18 @@
 
 * No root access
 * sudo from a non-privileged user account (e.g., `vagrant`) to `sysadmin` account
-* `Python 2.4+` is in `$PATH` and has the `simplejson` module (ansible requirements for your remote servers)
-* OR `Python 2.6+` is installed and accessible via `$PATH`
+* `Python 2.6+` is installed and accessible via `$PATH`
+* OR `Python 2.4+` is in `$PATH` and has the `simplejson` module (ansible requirements for your remote servers)
 * Perl 5+ is installed and accessible via `$PATH`
 * gcc & make are accessible
+
+### Variables:
+
+The following files have variables with defaults you'll probably want to modify:
+
+* Site vars: `provisioning/group_vars/all.yml`
+* Package vars: `provisioning/group_vars/src.yml`
+* httpd: `provisioning/roles/web/vars/main.yml`
 
 # Development / Testing with Vagrant:
 
