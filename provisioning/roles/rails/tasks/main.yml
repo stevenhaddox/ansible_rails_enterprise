@@ -1,0 +1,6 @@
+---
+###############################
+# Rack Web Server Integration #
+###############################
+
+- include: passenger.yml

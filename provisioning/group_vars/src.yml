@@ -121,3 +121,22 @@ src:
     name: "node"
     ver:  "v0.10.22"
     ext:  "tar.gz"
+# Rails packages
+  curl:
+    <<:   *defaults
+    url:  "http://curl.haxx.se/download/curl-7.33.0.tar.gz"
+    name: "curl"
+    ver:  "7.33.0"
+    ext:  "tar.gz"
+  passenger:
+    <<:   *defaults
+    url:  "http://s3.amazonaws.com/phusion-passenger/releases/passenger-4.0.27.tar.gz"
+    name: "passenger"
+    ver:  "4.0.27"
+    ext:  "tar.gz"
+  zlib:
+    <<:   *defaults
+    url:  "http://zlib.net/zlib-1.2.8.tar.gz"
+    name: "zlib"
+    ver:  "1.2.8"
+    ext:  "tar.gz"

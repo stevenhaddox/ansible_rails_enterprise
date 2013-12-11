@@ -1,0 +1,24 @@
+################
+# Install rack #
+################
+
+- name: Detect rack's presence
+  shell: "{{src_bash}} gem list | grep 'rack'"
+  register: rack_gem
+  changed_when: rack_gem.rc != 0
+  ignore_errors: True
+
+- name: Install rack gem
+  when: rack_gem|failed
+  shell: "{{src_bash}} gem install rack"
+  register: rack_install
+  ignore_errors: True
+
+# Detect rack's presence
+- shell: "bash -l -c 'rackup --version'"
+  register: rack_version
+  changed_when: rack_version.rc != 0
+
+- name: Display rack version
+  debug: msg="{{rack_version.stdout}}"
+  failed_when: rack_version.rc != 0

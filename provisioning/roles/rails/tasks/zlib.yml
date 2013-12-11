@@ -1,0 +1,36 @@
+################
+# Install zlib #
+################
+
+# Detect zlib's presence
+- stat: path={{STOW_PATH}}/../lib/libz.so
+  register: zlib_lib
+  changed_when: zlib_lib.stat.exists == False
+
+# Upload & extract source
+- { include: upload_src.yml, package: "{{src.zlib}}", pkg_check: "{{zlib_lib}}" }
+
+- name: Install zlib from source
+  when: zlib_lib.stat.exists == False
+  shell:
+    "{{src_bash}}
+    cd {{SRC_PATH}}/{{src_folder.stdout}};
+    ./configure --prefix={{STOW_PATH}}/{{src_folder.stdout}};
+    make;
+    make install prefix={{STOW_PATH}}/{{src_folder.stdout}};
+    ln -sfv {{STOW_PATH}}/{{src_folder.stdout}}/lib/libz.so.1.2.8 {{STOW_PATH}}/{{src_folder.stdout}}/lib/libz.so;
+    cd {{STOW_PATH}};
+    stow {{src_folder.stdout}};
+    creates={{STOW_PATH}}/../lib/libz.so;"
+  register: zlib_install
+  changed_when: zlib_install.rc !=0 or zlib_lib.stat.exists == False
+
+# Verify zlib installed
+- stat: path={{STOW_PATH}}/../lib/libz.so
+  register: zlib_path
+  changed_when: zlib_path.stat.exists == False
+  failed_when: zlib_path.stat.exists == False
+
+- name: Display zlib version
+  debug: msg="{{zlib_path.stat.lnk_source}}"
+  failed_when: '"{{src.zlib.ver}}" not in zlib_path.stat.lnk_source'
