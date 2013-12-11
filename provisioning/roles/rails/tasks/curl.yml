@@ -1,0 +1,34 @@
+################
+# Install curl #
+################
+
+# Detect curl's presence
+- stat: path={{STOW_PATH}}/../bin/curl-config
+  register: curl_bin
+  changed_when: curl_bin.stat.exists == False
+
+# Upload & extract source
+- { include: upload_src.yml, package: "{{src.curl}}", pkg_check: "{{curl_bin}}" }
+
+- name: Install curl from source
+  when: curl_bin.stat.exists == False
+  shell:
+    "{{src_bash}}
+    cd {{SRC_PATH}}/{{src_folder.stdout}};
+    ./configure --prefix={{STOW_PATH}}/{{src_folder.stdout}} --with-ssl;
+    make;
+    make install prefix={{STOW_PATH}}/{{src_folder.stdout}};
+    cd {{STOW_PATH}};
+    stow {{src_folder.stdout}};
+    creates={{STOW_PATH}}/../bin/curl-config;"
+  register: curl_install
+  changed_when: curl_install.rc !=0 or curl_bin.stat.exists == False
+
+# Verify curl installed
+- shell: "{{src_bash}} {{STOW_PATH}}/../bin/curl-config --version"
+  register: curl_version
+  changed_when: curl_version.rc != 0 or curl_bin.stat.exists == False
+
+- name: Display curl version
+  debug: msg="{{curl_version.stdout}}"
+  failed_when: '"{{src.curl.ver}}" not in curl_version.stdout'

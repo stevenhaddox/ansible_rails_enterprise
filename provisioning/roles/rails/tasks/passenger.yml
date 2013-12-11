@@ -1,0 +1,70 @@
+#####################
+# Install Passenger #
+#####################
+
+###################
+# Requires:       #
+# * openssl-devel #
+# * zlib-devel    #
+# * curl-devel    #
+###################
+
+- include: zlib.yml
+- include: curl.yml
+- include: rack.yml
+
+# Detect passenger's presence
+- stat: path={{STOW_PATH}}/../bin/passenger-config
+  register: passenger_bin
+  changed_when: passenger_bin.stat.exists == False
+
+#- name: Install Passenger via Gem
+#  when: passenger_bin.stat.exists == False and 4 > src.passenger.ver|int
+#  shell: "{{src_bash}} gem install passenger --no-ri --no-rdoc;"
+#  register: passenger_install
+
+# Upload & extract source
+- { include: upload_src.yml, package: "{{src.passenger}}", pkg_check: "{{passenger_bin}}" }
+
+- name: Install Passenger From Source
+  when: passenger_bin.stat.exists == False and 3 < src.passenger.ver.split(".")[0]|int
+  shell:
+    "{{src_bash}}
+    cp -r {{SRC_PATH}}/{{src_folder.stdout}} {{STOW_PATH}}/;
+    cd {{STOW_PATH}};
+    stow {{src_folder.stdout}};
+    creates={{STOW_PATH}}/../bin/passenger-config;"
+  register: passenger_install
+  changed_when: passenger_install.rc !=0 or passenger_bin.stat.exists == False
+
+- debug: msg="{{passenger_install}}"
+
+- name: Install Passenger Apache Module
+  when: passenger_bin.stat.exists == False
+  shell: "{{src_bash}} passenger-install-apache2-module --auto"
+  register: passenger_apache_installed
+  changed_when: passenger_apache_installed.rc == 0
+
+# Verify passenger installed
+- shell: "{{src_bash}} passenger-config --version"
+  register: passenger_version
+  changed_when: passenger_version.rc != 0 or passenger_bin.stat.exists == False
+
+- name: Display Passenger version
+  debug: msg="{{passenger_version.stdout}}"
+  failed_when: '"{{src.passenger.ver}}" not in passenger_version.stdout'
+
+- name: Create Apache Passenger Module
+  template: src=passenger_mod.conf.j2 dest={{httpd.paths.conf}}/extra/passenger_mod.conf backup=no
+
+- name: Setup passenger module include
+  lineinfile:
+    dest={{httpd.paths.httpd_conf}}
+    insertafter=EOF
+    state=present
+    regexp="^Include {{httpd.paths.conf}}/extra/passenger_mod.conf$"
+    line="Include {{httpd.paths.conf}}/extra/passenger_mod.conf"
+
+- name: Restart Apache
+  shell: "{{src_bash}} {{STOW_PATH}}/../bin/httpd -k restart"
+  register: apache_restart

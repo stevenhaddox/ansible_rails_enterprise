@@ -8,6 +8,24 @@
     - "{{STOW_PATH}}"
     - "{{SRC_PATH}}"
 
+- name: Document STOW Vars
+  lineinfile:
+    dest={{HOME.stdout}}/.bashrc
+    state=present
+    insertafter=EOF
+    create=True
+    regexp='^#STOW Variables'
+    line='#STOW Variables'
+
+- name: Ensure $SRC is defined
+  lineinfile:
+    dest={{HOME.stdout}}/.bashrc
+    regexp="^export SRC={{SRC_PATH}}$"
+    line="export SRC={{SRC_PATH}}"
+    state=present
+    insertafter=EOF
+    create=True
+
 - name: Ensure $STOW is defined
   lineinfile:
     dest={{HOME.stdout}}/.bashrc
@@ -22,15 +40,6 @@
     dest={{HOME.stdout}}/.bashrc
     regexp="^export PATH=.*STOW.*:.*PATH"
     line="export PATH=${STOW}/../bin:${PATH}"
-    state=present
-    insertafter=EOF
-    create=True
-
-- name: Ensure $SRC is defined
-  lineinfile:
-    dest={{HOME.stdout}}/.bashrc
-    regexp="^export SRC={{SRC_PATH}}$"
-    line="export SRC={{SRC_PATH}}"
     state=present
     insertafter=EOF
     create=True

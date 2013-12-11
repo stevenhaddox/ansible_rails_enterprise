@@ -10,7 +10,6 @@
   when: bzip2_bin.stat.exists == False
   shell: '{{src_bash}}
          cd {{SRC_PATH}}/{{src_folder.stdout}};
-         export CFLAGS="-fPIC";
          make -f Makefile-libbz2_so;
          make;
          make install PREFIX={{STOW_PATH}}/{{src_folder.stdout}};

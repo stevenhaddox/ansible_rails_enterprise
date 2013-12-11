@@ -12,6 +12,30 @@ STOW_PATH:    "{{HOME.stdout}}/opt/stow"
 SRC_PATH:     "{{HOME.stdout}}/SUPPORT/src"
 src_bash:     "source {{HOME.stdout}}/.bashrc;"
 
+compile_flags:
+  - flag:  "CFLAGS"
+    value: "-fPIC -I{{STOW_PATH}}/../include"
+  - flag:  "CPPFLAGS"
+    value: "-I{{STOW_PATH}}/../include"
+  - flag:  "C_INCLUDE_PATH"
+    value: "{{STOW_PATH}}/../include"
+  - flag:  "CPLUS_INCLUDE_PATH"
+    value: "{{STOW_PATH}}/../include"
+  - flag:  "LDFLAGS"
+    value: "-L{{STOW_PATH}}/../lib -R{{STOW_PATH}}/../lib"
+  - flag:  "LD_LIBRARY_PATH"
+    value: "{{STOW_PATH}}/../lib"
+  - flag:  "LIBRARY_PATH"
+    value: "{{STOW_PATH}}/../lib"
+  - flag:  "LD_RUN_PATH"
+    value: "{{STOW_PATH}}/../lib"
+  - flag:  "TMPDIR"
+    value: "/tmp"
+#  - flag:  "CC"
+#    value: "gcc"
+#  - flag:  "CXX"
+#    value: "g++"
+
 # Ruby Config
 rvm_fw:
   enabled: True # False

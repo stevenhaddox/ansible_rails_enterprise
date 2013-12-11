@@ -44,6 +44,7 @@
   vars_files:
   - group_vars/all.yml
   - group_vars/src.yml
+  - roles/web/vars/main.yml
   hosts: rails
   sudo_user: "{{sysadmin}}"
   sudo: yes

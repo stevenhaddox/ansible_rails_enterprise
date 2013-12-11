@@ -18,11 +18,6 @@
 - name: Install Python
   when: python_bin.stat.exists == False
   shell: '{{src_bash}}
-    export CLFLAGS="-fPIC";
-    export C_INCLUDE_PATH={{STOW_PATH}}/../include;
-    export CPLUS_INCLUDE_PATH=${C_INCLUDE_PATH};
-    export LIBRARY_PATH={{STOW_PATH}}/../lib;
-    export LD_RUN_PATH=${LIBRARY_PATH};
     cd {{SRC_PATH}}/{{src_folder.stdout}};
     ./configure --prefix={{STOW_PATH}}/{{src_folder.stdout}} --libdir={{STOW_PATH}}/../lib --enable-shared;
     make;
