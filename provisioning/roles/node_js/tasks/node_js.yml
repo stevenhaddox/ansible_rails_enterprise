@@ -11,7 +11,7 @@
   shell: '{{src_bash}}
          cd {{SRC_PATH}}/{{src_folder.stdout}};
          ./configure --prefix={{STOW_PATH}}/{{src_folder.stdout}};
-         make;
+         make CFLAGS+=-O2 CXXFLAGS+=-O2;
          make install PREFIX={{STOW_PATH}}/{{src_folder.stdout}};
          cd {{STOW_PATH}};
          stow {{src_folder.stdout}};'
