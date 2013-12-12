@@ -1,5 +1,12 @@
+# Configuration files
+provisioning/group_vars/all.yml
+provisioning/group_vars/src.yml
+provisioning/roles/web/vars/main.yml
+
+# Source file downloads
+provisioning/src_files/*
+
+# Generic ignores
 .vagrant
 *.bak
-provisioning/group_vars/all.yml
-provisioning/src_files/*
 .DS_Store

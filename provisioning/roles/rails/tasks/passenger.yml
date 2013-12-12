@@ -37,10 +37,13 @@
   register: passenger_install
   changed_when: passenger_install.rc !=0 or passenger_bin.stat.exists == False
 
-- debug: msg="{{passenger_install}}"
+
+- stat: path={{STOW_PATH}}/../conf/extra/passenger_mod.conf
+  register: passenger_apache_conf
+  changed_when: passenger_apache_conf.stat.exists == False
 
 - name: Install Passenger Apache Module
-  when: passenger_bin.stat.exists == False
+  when: passenger_apache_conf.stat.exists == False
   shell: "{{src_bash}} passenger-install-apache2-module --auto"
   register: passenger_apache_installed
   changed_when: passenger_apache_installed.rc == 0
