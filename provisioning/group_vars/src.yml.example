@@ -5,8 +5,8 @@
 
 src:
   defaults: &defaults
-    custom_folder: False
-    custom_file_name: False
+    custom_file_name: False # Modify for non-standard src file name
+    custom_folder: False # Modify for non-standard folder after tarball is extracted
     prefix: ""
     suffix: ""
   gcc:
@@ -70,6 +70,14 @@ src:
     name: "tmux"
     ver:  "1.8"
     ext:  "tar.gz"
+# Ruby integrated packages
+  vim:
+    <<:   *defaults
+    url:  "ftp://ftp.vim.org/pub/vim/unix/vim-7.3.tar.bz2"
+    name: "vim"
+    ver:  "7.3"
+    ext:  "tar.bz2"
+    custom_folder: "vim73"
 # Apache packages
   apr:
     <<:   *defaults
