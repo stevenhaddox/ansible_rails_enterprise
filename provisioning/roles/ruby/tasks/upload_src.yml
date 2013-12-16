@@ -1,1 +1,1 @@
-roles/common/tasks/upload_src.yml
+../../common/tasks/upload_src.yml
