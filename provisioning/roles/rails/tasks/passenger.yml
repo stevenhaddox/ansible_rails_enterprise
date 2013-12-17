@@ -13,6 +13,25 @@
 - include: curl.yml
 - include: rack.yml
 
+# Define Apache Environment Variables
+- name: Ensure $HTTPD is defined
+  lineinfile:
+    dest={{HOME.stdout}}/.bashrc
+    regexp="^export HTTPD={{httpd.paths.root}}/bin/httpd$"
+    line="export HTTPD={{httpd.paths.root}}/bin/httpd"
+    state=present
+    insertafter=EOF
+    create=True
+
+- name: Ensure $APXS2 is defined
+  lineinfile:
+    dest={{HOME.stdout}}/.bashrc
+    regexp="^export APXS2={{httpd.paths.root}}/bin/apxs$"
+    line="export APXS2={{httpd.paths.root}}/bin/apxs"
+    state=present
+    insertafter=EOF
+    create=True
+
 # Detect passenger's presence
 - stat: path={{STOW_PATH}}/../bin/passenger-config
   register: passenger_bin
@@ -44,12 +63,12 @@
 
 - name: Install Passenger Apache Module
   when: passenger_apache_conf.stat.exists == False
-  shell: "{{src_bash}} passenger-install-apache2-module --auto"
+  shell: bash -l -c "{{src_bash}} passenger-install-apache2-module --auto"
   register: passenger_apache_installed
   changed_when: passenger_apache_installed.rc == 0
 
 # Verify passenger installed
-- shell: "{{src_bash}} passenger-config --version"
+- shell: bash -l -c "{{src_bash}} passenger-config --version"
   register: passenger_version
   changed_when: passenger_version.rc != 0 or passenger_bin.stat.exists == False
 
