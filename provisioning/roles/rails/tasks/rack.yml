@@ -2,19 +2,23 @@
 # Install rack #
 ################
 
-- name: Detect rack's presence
-  shell: "{{src_bash}} gem list | grep 'rack'"
+- command: echo "grep 'rack ('"
+  register: grep_rack
+  changed_when: False
+
+- name: Detect rack
+  shell: 'bash -l -c "gem list | {{grep_rack.stdout}}"'
   register: rack_gem
   changed_when: rack_gem.rc != 0
   ignore_errors: True
 
 - name: Install rack gem
   when: rack_gem|failed
-  shell: "{{src_bash}} gem install rack"
+  shell: 'bash -l -c "gem install rack"'
   register: rack_install
   ignore_errors: True
 
-# Detect rack's presence
+# Detect rack version
 - shell: "bash -l -c 'rackup --version'"
   register: rack_version
   changed_when: rack_version.rc != 0
