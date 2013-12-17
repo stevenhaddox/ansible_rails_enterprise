@@ -1,3 +1,6 @@
+- name: Create {{HOME.stdout}}/.gemrc
+  template: src=gemrc.j2 dest={{HOME.stdout}}/.gemrc
+
 # Install Specified Ruby
 - stat: path={{HOME.stdout}}/.rvm/rubies/{{ruby.version}}/bin/ruby
   register: ruby_bin
@@ -7,19 +10,14 @@
   shell: "{{src_bash}} rvm install {{ruby.version}} --with-opt-dir={{HOME.stdout}}/.rvm/usr --verify-downloads 1 creates={{HOME.stdout}}/.rvm/rubies/{{ruby.version}}"
   register: ruby_installed
 
-- shell: "{{src_bash}} ruby --version"
-  register: ruby_test
-  changed_when: False
-  ignore_errors: yes
-
 - name: Set Default Ruby
-  when: ruby_test|failed
+  when: ruby_bin.stat.exists == False
   # Use bash -l -c to ensure RVM loads as a function to set default Ruby
   shell: bash -l -c "{{src_bash}} rvm use {{ruby.version}} --default"
   register: default_rvm_ruby
   changed_when: default_rvm_ruby.rc != 0
 
-- shell: "{{src_bash}} ruby --version"
+- shell: bash -l -c "{{src_bash}} ruby --version"
   register: ruby_version
   changed_when: ruby_version.rc != 0
 
@@ -27,21 +25,14 @@
 - name: Display ruby version
   debug: msg="{{ruby_version.stdout}}"
 
-- name: Add Gem Sources
-  when: ruby.gem_sources.add
-  shell: "{{src_bash}} gem sources -a {{item}}"
-  with_items: ruby.gem_sources.add
-  register: gem_src_add
-  changed_when: gem_src_add.rc == 0
-
 - name: Remove Gem Sources
   when: ruby.gem_sources.delete
-  shell: "{{src_bash}} gem sources -r {{item}}"
+  shell: bash -l -c "{{src_bash}} gem sources -r {{item}}"
   with_items: ruby.gem_sources.delete
   register: gem_src_del
   changed_when: "'not present' not in gem_src_del.stdout or gem_src_del|failed"
 
-- shell: "{{src_bash}} bundle --version"
+- shell: bash -l -c "{{src_bash}} bundle --version"
   register: bundler_test
   changed_when: False
   ignore_errors: yes
