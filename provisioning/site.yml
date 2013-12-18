@@ -40,7 +40,7 @@
   roles:
     - web
 
-- name: Setup the Rails environment
+- name: Setup the Rack/Rails environment
   vars_files:
   - group_vars/all.yml
   - group_vars/src.yml
@@ -49,7 +49,7 @@
   sudo_user: "{{sysadmin}}"
   sudo: yes
   roles:
-    - rails
+    - rack
 
 #- name: Setup the DB infrastructure
 #  hosts: db
