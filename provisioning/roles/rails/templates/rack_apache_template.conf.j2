@@ -1,11 +1,22 @@
-<VirtualHost *:80>
-   ServerName {{rails_app_domain}}
+<VirtualHost *:{{httpd.port}}>
+   ServerName {{app.domain}}
    # !!! Be sure to point DocumentRoot to 'public'!
-   DocumentRoot {{rails_app_root}}/public
-   <Directory /somewhere/public>
-      # This relaxes Apache security settings.
-      AllowOverride all
-      # MultiViews must be turned off.
-      Options -MultiViews
+   DocumentRoot {{apps.root}}/{{app.name}}/current/public
+   <Directory {{apps.root}}/{{app.name}}/current/public>
+     # MultiViews must be turned off.
+     Options -MultiViews
+
+     #------------#
+     # Apache 2.4 #
+     #------------#
+     Require all granted
+
+     #------------#
+     # Apache 2.2 #
+     #------------#
+     # Order allow,deny
+     # Allow from all
+     # This relaxes Apache security settings.
+     # AllowOverride all
    </Directory>
 </VirtualHost>

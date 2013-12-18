@@ -4,3 +4,4 @@
 ###############################
 
 - include: passenger.yml
+- { include: rack_app.yml, app: "{{apps.example}}", when: apps.example.enabled == True }
