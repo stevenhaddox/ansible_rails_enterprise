@@ -62,3 +62,12 @@ ruby:
     delete:
       - http://rubygems.org/
 #      - https://rubygems.org/
+
+# Rack Application Deployment Variables
+apps:
+  root: "{{HOME.stdout}}/u"
+  example:
+    enabled: True # False
+    name:   "example"
+    domain: "localhost"
+    #domain:   "{{http.domain}}.{{internal_tld}}"

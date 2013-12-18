@@ -1,0 +1,44 @@
+#####################################################
+# Init a Rack app using Capistrano folder structure #
+#####################################################
+
+- stat: path={{apps.root}}/{{app.name}}
+  register: app_path
+
+- shell: date +%Y%m%d%H%M%S
+  register: time
+  changed_when: False
+
+- name: Create the app releases directory
+  when: app_path.stat.exists == False
+  shell: "mkdir -p {{apps.root}}/{{app.name}}/releases/{{time.stdout}}/public creates={{apps.root}}/{{app.name}}/releases/{{time.stdout}}/public"
+
+- name: Create the app shared directory
+  when: app_path.stat.exists == False
+  shell: "mkdir -p {{apps.root}}/{{app.name}}/shared creates={{apps.root}}/{{app.name}}/shared"
+
+- name: Copy the example rack app
+  when: app_path.stat.exists == False
+  template: src={{app.name}}.config.ru.j2 dest={{apps.root}}/{{app.name}}/releases/{{time.stdout}}/config.ru
+
+- name: Symlink releases/{{time.stdout}} => current
+  when: app_path.stat.exists == False
+  file: src={{apps.root}}/{{app.name}}/releases/{{time.stdout}} dest={{apps.root}}/{{app.name}}/current state=link
+
+- name: Create sites-available/{{app.name}} virtualhost file
+  when: app_path.stat.exists == False
+  template: src=rack_apache_template.conf.j2 dest={{httpd.paths.sites_available}}/{{app.name}}.conf
+
+- name: Create sites-enabled/{{app.name}} symlink
+  when: app_path.stat.exists == False
+  file: src={{httpd.paths.sites_available}}/{{app.name}}.conf dest={{httpd.paths.sites_enabled}}/{{app.name}}.conf state=link
+
+- name: Restart httpd to detect new virtualhost
+  when: app_path.stat.exists == False
+  shell: "{{src_bash}} httpd -k restart"
+
+- name: Verify passenger renders a rack application
+  shell: curl http://localhost:{{httpd.port}} | grep 'Hello, rack!'
+  register: rack_curl
+  changed_when: rack_curl.rc != 0
+  failed_when: rack_curl.rc != 0
