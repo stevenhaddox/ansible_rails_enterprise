@@ -28,10 +28,10 @@
   register: ncurses_install
   changed_when: ncurses_install.rc != 0 or ncurses_bin.stat.exists == False
 
-- shell: "{{src_bash}} ncurses5-config --prefix"
-  register: ncurses_config
-  changed_when: ncurses_config.rc != 0 or ncurses_bin.stat.exists == False
+- shell: "{{src_bash}} ncurses5-config --version"
+  register: ncurses_version
+  changed_when: ncurses_version.rc != 0 or ncurses_bin.stat.exists == False
 
-- name: Display ncurses-config
-  debug: msg="{{ncurses_config.stdout}}"
-  failed_when: '"{{src.ncurses.ver}}" not in ncurses_config.stdout'
+- name: Display ncurses version
+  debug: msg="{{ncurses_version.stdout}}"
+  failed_when: '"{{src.ncurses.ver}}" not in ncurses_version.stdout'

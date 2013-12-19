@@ -1,6 +1,6 @@
 - name: Install RVM Packages for Rubies
   when: rvm.packages != False
-  shell: "{{src_bash}} rvm pkg install {{item}}"
+  shell: bash -l -c "rvm pkg install {{item.pkg}}" creates="{{item.creates}}"
   with_items: rvm.packages
   register: rvm_pkg_tmp
   changed_when: rvm_pkg_tmp.rc != 0
