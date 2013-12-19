@@ -4,7 +4,7 @@ provisioning/group_vars/src.yml
 provisioning/roles/web/vars/main.yml
 
 # Source file downloads
-provisioning/src_files/*
+provisioning/src_files
 
 # Generic ignores
 .vagrant

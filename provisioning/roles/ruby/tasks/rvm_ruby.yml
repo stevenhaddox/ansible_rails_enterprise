@@ -7,17 +7,17 @@
 
 - name: Install Ruby
   when: ruby_bin.stat.exists == False
-  shell: "{{src_bash}} rvm install {{ruby.version}} --with-opt-dir={{HOME.stdout}}/.rvm/usr --verify-downloads 1 creates={{HOME.stdout}}/.rvm/rubies/{{ruby.version}}"
+  shell: bash -l -c "rvm install {{ruby.version}} --with-opt-dir={{HOME.stdout}}/.rvm/usr --verify-downloads 1" creates={{HOME.stdout}}/.rvm/rubies/{{ruby.version}}
   register: ruby_installed
 
 - name: Set Default Ruby
   when: ruby_bin.stat.exists == False
   # Use bash -l -c to ensure RVM loads as a function to set default Ruby
-  shell: bash -l -c "{{src_bash}} rvm use {{ruby.version}} --default"
+  shell: bash -l -c "rvm use {{ruby.version}} --default"
   register: default_rvm_ruby
   changed_when: default_rvm_ruby.rc != 0
 
-- shell: bash -l -c "{{src_bash}} ruby --version"
+- shell: bash -l -c "ruby --version"
   register: ruby_version
   changed_when: ruby_version.rc != 0
 
@@ -27,12 +27,12 @@
 
 - name: Remove Gem Sources
   when: ruby.gem_sources.delete
-  shell: bash -l -c "{{src_bash}} gem sources -r {{item}}"
+  shell: bash -l -c "gem sources -r {{item}}"
   with_items: ruby.gem_sources.delete
   register: gem_src_del
   changed_when: "'not present' not in gem_src_del.stdout or gem_src_del|failed"
 
-- shell: bash -l -c "{{src_bash}} bundle --version"
+- shell: bash -l -c "bundle --version"
   register: bundler_test
   changed_when: False
   ignore_errors: yes

@@ -88,5 +88,6 @@
     line="Include {{httpd.paths.conf}}/extra/passenger_mod.conf"
 
 - name: Restart Apache
+  when: passenger_apache_conf.stat.exists == False
   shell: "{{src_bash}} {{STOW_PATH}}/../bin/httpd -k restart"
   register: apache_restart
