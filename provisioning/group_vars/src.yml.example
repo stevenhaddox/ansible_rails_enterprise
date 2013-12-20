@@ -54,6 +54,7 @@ src:
     ext:  "tar.gz"
   openssl:
     <<:   *defaults
+    # 1.0.1e throws an error when compiling with curl
     url:  "ftp://ftp.openssl.org/source/openssl-1.0.1c.tar.gz"
     name: "openssl"
     ver:  "1.0.1c"

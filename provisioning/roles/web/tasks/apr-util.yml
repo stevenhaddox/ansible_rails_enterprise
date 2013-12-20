@@ -21,7 +21,8 @@
     "{{src_bash}}
     cd {{SRC_PATH}}/{{src_folder.stdout}};
     ./configure --prefix={{STOW_PATH}}/{{src_folder.stdout}} \
-      --with-apr={{STOW_PATH}}/{{src.apr['name']}}-{{src.apr['ver']}};
+      --with-apr={{STOW_PATH}}/{{src.apr['name']}}-{{src.apr['ver']}} \
+      --with-openssl={{STOW_PATH}}/{{src.openssl['name']}}-{{src.openssl['ver']}} --with-crypto;
     make;
     make install prefix={{STOW_PATH}}/{{src_folder.stdout}};
     cd {{STOW_PATH}};
