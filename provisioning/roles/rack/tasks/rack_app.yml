@@ -25,16 +25,19 @@
   when: app_path.stat.exists == False
   file: src={{apps.root}}/{{app.name}}/releases/{{time.stdout}} dest={{apps.root}}/{{app.name}}/current state=link
 
+- stat: path={{httpd.paths.sites_enabled}}/{{app.name}}.conf
+  register: vhost_conf
+
 - name: Create sites-available/{{app.name}} virtualhost file
-  when: app_path.stat.exists == False
+  when: vhost_conf.stat.exists == False
   template: src=rack_apache_template.conf.j2 dest={{httpd.paths.sites_available}}/{{app.name}}.conf
 
 - name: Create sites-enabled/{{app.name}} symlink
-  when: app_path.stat.exists == False
+  when: vhost_conf.stat.exists == False
   file: src={{httpd.paths.sites_available}}/{{app.name}}.conf dest={{httpd.paths.sites_enabled}}/{{app.name}}.conf state=link
 
 - name: Restart httpd to detect new virtualhost
-  when: app_path.stat.exists == False
+  when: vhost_conf.stat.exists == False
   shell: "{{src_bash}} httpd -k restart"
 
 - name: Verify passenger renders a rack application
