@@ -1,15 +1,4 @@
 ---
-- name: Set sysadmin user's $HOME variable
-  shell: chdir=~ pwd
-  register: HOME
-  ignore_errors: yes
-  changed_when: "HOME.rc != 0"
-
-###################
-# Define ENV Vars #
-###################
-- include: env.yml
-
 ####################
 # Install GNU Stow #
 ####################
