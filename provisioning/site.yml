@@ -9,7 +9,7 @@
 #  roles:
 #    - debug
 
-- name: Initialize all SUPPORT servers
+- name: Initialize essential variables & environment vars
   vars_files:
   - group_vars/all.yml
   - group_vars/src.yml
@@ -17,6 +17,20 @@
   sudo: yes
   sudo_user: "{{sysadmin}}"
   roles:
+    - prereq
+  tags:
+    - prereq
+
+- name: Install common packages for all servers
+  vars_files:
+  - group_vars/all.yml
+  - group_vars/src.yml
+  hosts: all
+  sudo: yes
+  sudo_user: "{{sysadmin}}"
+  roles:
+    - common
+  tags:
     - common
 
 - name: Setup the Ruby environment
@@ -28,6 +42,8 @@
   sudo: yes
   roles:
     - ruby
+  tags:
+    - ruby
 
 - name: Setup the webserver infrastructure
   hosts: web
@@ -35,9 +51,9 @@
   vars_files:
   - group_vars/all.yml
   - group_vars/src.yml
-#  vars_prompt:
-#    ssl_passphrase: "Please enter the passphrase for the SSL certificate"
   roles:
+    - web
+  tags:
     - web
 
 - name: Setup the Rack/Rails environment
@@ -49,6 +65,8 @@
   sudo_user: "{{sysadmin}}"
   sudo: yes
   roles:
+    - rack
+  tags:
     - rack
 
 #- name: Setup the DB infrastructure
