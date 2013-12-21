@@ -14,8 +14,8 @@
   - group_vars/all.yml
   - group_vars/src.yml
   hosts: all
-  sudo: yes
   sudo_user: "{{sysadmin}}"
+  sudo: yes
   roles:
     - prereq
   tags:
@@ -26,8 +26,8 @@
   - group_vars/all.yml
   - group_vars/src.yml
   hosts: all
-  sudo: yes
   sudo_user: "{{sysadmin}}"
+  sudo: yes
   roles:
     - common
   tags:
@@ -48,6 +48,7 @@
 - name: Setup the webserver infrastructure
   hosts: web
   sudo_user: "{{sysadmin}}"
+  sudo: yes
   vars_files:
   - group_vars/all.yml
   - group_vars/src.yml
