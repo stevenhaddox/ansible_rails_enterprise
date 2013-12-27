@@ -9,6 +9,13 @@ src:
     custom_folder: False # Modify for non-standard folder after tarball is extracted
     prefix: ""
     suffix: ""
+  expat:
+    <<: *defaults
+    # Save to expat-2.1.0.tar.gz, e.g. wget bit.ly/expat-210 -O expat-2.1.0.tar.gz
+    url:  "http://bit.ly/expat-210"
+    name: "expat"
+    ver:  "2.1.0"
+    ext:  "tar.gz"
   gcc:
     <<:   *defaults
     url:  "http://ftp.gnu.org/gnu/gcc/gcc-4.8.2/gcc-4.8.2.tar.bz2"
@@ -139,9 +146,9 @@ src:
     ext:  "tar.gz"
   passenger:
     <<:   *defaults
-    url:  "http://s3.amazonaws.com/phusion-passenger/releases/passenger-4.0.27.tar.gz"
+    url:  "http://s3.amazonaws.com/phusion-passenger/releases/passenger-4.0.29.tar.gz"
     name: "passenger"
-    ver:  "4.0.27"
+    ver:  "4.0.29"
     ext:  "tar.gz"
   zlib:
     <<:   *defaults

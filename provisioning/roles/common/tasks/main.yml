@@ -10,5 +10,4 @@
 # Installs: libevent, ncurses, tmux
 - include: tmux.yml
 - include: openssl.yml # Because cryptography
-# Needs: gcc-c++ curl-devel expat-devel gettext-devel openssl-devel zlib-devel
-#- include: git.yml
+- include: expat.yml   # Needed for git
