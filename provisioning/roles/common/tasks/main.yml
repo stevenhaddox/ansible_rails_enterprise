@@ -7,8 +7,24 @@
 ######################
 # Available Packages #
 ######################
-# Installs: libevent, ncurses, tmux
+- include: zlib.yml     # Location via LFS book. Needed for curl, git, passenger, etc.
+# gmp   # Location via LFS book.
+# mpfr  # Location via LFS book.
+# mpc   # Location via LFS book.
+# gcc   # Location via LFS book.
+- include: bzip2.yml    # Location via LFS book. Needed for Node.js via Python 2.7.3 w/ bz2
+- include: ncurses.yml  # Location via LFS book. Needed for tmux (and many more)
+- include: libevent.yml # Needed for tmux
+# bison 3.0.2 (?)  # Location via LFS book.
+# readline 6.2     # Location via LFS book.
+# autoconf 2.69    # Location via LFS book.
+# automake 1.14    # Location via LFS book.
+# gettext 0.18.3.1 # Location via LFS book.
+# xz 5.0.5   # Location via LFS book.
+# gzip 1.6   # Location via LFS book.
+# make 4.0   # Location via LFS book.
+# tar 1.27.1 # Location via LFS book.
 - include: tmux.yml
-- include: openssl.yml # Because cryptography
-# Needs: gcc-c++ curl-devel expat-devel gettext-devel openssl-devel zlib-devel
-#- include: git.yml
+- include: openssl.yml
+- include: curl.yml     # Best w/ OpenSSL, needed for passenger
+- include: git.yml

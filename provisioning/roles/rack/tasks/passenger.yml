@@ -9,8 +9,6 @@
 # * curl-devel    #
 ###################
 
-- include: zlib.yml
-- include: curl.yml
 - include: rack.yml
 
 # Define Apache Environment Variables

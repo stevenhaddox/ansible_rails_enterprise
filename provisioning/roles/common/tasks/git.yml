@@ -6,11 +6,10 @@
 # Requirements:   #
 # * gcc-c++       #
 # * curl-devel    #
-# * expat-devel   #
 # * gettext-devel #
-# * openssl-devel #
-# * zlib-devel    #
 ###################
+
+- include: expat.yml # needed for git
 
 # Detect git's presence
 - stat: path={{STOW_PATH}}/../bin/git
@@ -36,11 +35,6 @@
 - shell: "{{src_bash}} git --version"
   register: git_version
   changed_when: git_version.rc != 0 or git_bin.stat.exists == False
-
-- shell: "{{src_bash}} git --version"
-  register: git_version
-  changed_when: git_version.rc != 0
-  failed_when: git_version.rc != 0
 
 - name: Display git version
   debug: msg="{{git_version.stdout}}"

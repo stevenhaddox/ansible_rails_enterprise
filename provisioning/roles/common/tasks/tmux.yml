@@ -2,14 +2,13 @@
 # Install Tmux #
 ################
 
-###################
-# Requirements:   #
-# * gcc-c++       #
-###################
+####################
+# Requirements:    #
+# * gcc-c++        #
+# * ncurses-5.9    #
+# * libevent-2.1.0 #
+####################
 
-- include: ncurses.yml
-- include: libevent.yml
-#
 # Detect tmux's presence
 - stat: path={{STOW_PATH}}/../bin/tmux
   register: tmux_bin

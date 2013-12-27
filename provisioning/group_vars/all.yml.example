@@ -26,8 +26,8 @@ compile_flags:
     value: "{{STOW_PATH}}/../include"
     regex: "{{STOW_PATH}}/../include"
   - flag:  "LDFLAGS"
-    value: "-L{{STOW_PATH}}/../lib -R{{STOW_PATH}}/../lib"
-    regex: "-L{{STOW_PATH}}/../lib -R{{STOW_PATH}}/../lib"
+    value: "-L{{STOW_PATH}}/../lib"
+    regex: "-L{{STOW_PATH}}/../lib"
   - flag:  "LD_LIBRARY_PATH"
     value: "{{STOW_PATH}}/../lib:$LD_LIBRARY_PATH"
     regex: "{{STOW_PATH}}/../lib:.LD_LIBRARY_PATH"
@@ -58,6 +58,8 @@ rvm:
       creates: "{{HOME.stdout}}/.rvm/usr/lib/libyaml.a"
     - pkg: zlib --verify-downloads 1
       creates: "{{HOME.stdout}}/.rvm/usr/lib/libz.so"
+    - pkg: ncurses --verify-downloads 1
+      creates: "{{HOME.stdout}}/.rvm/usr/lib/libncurses.so"
     - pkg: readline
       creates: "{{HOME.stdout}}/.rvm/usr/lib/libreadline.so"
     - pkg: iconv
@@ -66,13 +68,11 @@ rvm:
       creates: "{{HOME.stdout}}/.rvm/usr/lib/libxml2.so"
     - pkg: libxslt --verify-downloads 1
       creates: "{{HOME.stdout}}/.rvm/usr/lib/libxslt.so"
-    - pkg: ncurses --verify-downloads 1
-      creates: "{{HOME.stdout}}/.rvm/usr/lib/libncurses.so"
     - pkg: openssl
       creates: "{{HOME.stdout}}/.rvm/usr/bin/openssl"
 
 ruby:
-  version: "ruby-2.0.0-p353"
+  version: "ruby-2.1.0-p0"
   gem_sources:
     add:
       - https://rubygems.org/
