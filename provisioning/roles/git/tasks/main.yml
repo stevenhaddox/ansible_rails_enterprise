@@ -1,0 +1,4 @@
+###############
+# Install Git #
+###############
+- include: git.yml

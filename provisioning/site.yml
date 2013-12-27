@@ -70,6 +70,18 @@
   tags:
     - rack
 
+- name: Setup git (after Passenger/rack)
+  vars_files:
+  - group_vars/all.yml
+  - group_vars/src.yml
+  hosts: all
+  sudo_user: "{{sysadmin}}"
+  sudo: yes
+  roles:
+    - git
+  tags:
+    - git
+
 #- name: Setup the DB infrastructure
 #  hosts: db
 #  sudo_user: "{{sysadmin}}"

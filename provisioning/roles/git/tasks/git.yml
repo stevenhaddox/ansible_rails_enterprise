@@ -1,0 +1,39 @@
+###############
+# Install Git #
+###############
+
+###################
+# Requirements:   #
+# * gcc-c++       #
+# * gettext-devel #
+# * curl-devel    #
+###################
+
+# Detect git's presence
+- stat: path={{STOW_PATH}}/../bin/git
+  register: git_bin
+  changed_when: git_bin.stat.exists == False
+
+# Upload & extract source
+- { include: upload_src.yml, package: "{{src.git}}", pkg_check: "{{git_bin}}" }
+
+- name: Install Git
+  when: git_bin.stat.exists == False
+  shell:
+    "{{src_bash}}
+    cd {{SRC_PATH}}/{{src_folder.stdout}};
+    ./configure --prefix={{STOW_PATH}}/{{src_folder.stdout}};
+    make prefix={{STOW_PATH}}/{{src_folder.stdout}} all doc info;
+    make install prefix={{STOW_PATH}}/{{src_folder.stdout}};
+    cd {{STOW_PATH}};
+    stow {{src_folder.stdout}}"
+  register: git_install
+  changed_when: git_install.rc != 0 or git_bin.stat.exists == False
+
+- shell: "{{src_bash}} git --version"
+  register: git_version
+  changed_when: git_version.rc != 0 or git_bin.stat.exists == False
+
+- name: Display git version
+  debug: msg="{{git_version.stdout}}"
+  failed_when: '"{{src.git.ver}}" not in git_version.stdout'

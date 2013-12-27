@@ -1,0 +1,32 @@
+#################
+# Install Expat #
+#################
+
+# Detect expat's presence
+- stat: path={{STOW_PATH}}/../lib/libexpat.so
+  register: expat_lib
+  changed_when: expat_lib.stat.exists == False
+
+# Upload & extract source
+- { include: upload_src.yml, package: "{{src.expat}}", pkg_check: "{{expat_lib}}" }
+
+- name: Install Expat
+  when: expat_lib.stat.exists == False
+  shell:
+    "{{src_bash}}
+    cd {{SRC_PATH}}/{{src_folder.stdout}};
+    ./configure --prefix={{STOW_PATH}}/{{src_folder.stdout}};
+    make;
+    make install prefix={{STOW_PATH}}/{{src_folder.stdout}};
+    cd {{STOW_PATH}};
+    stow {{src_folder.stdout}}"
+  register: expat_install
+  changed_when: expat_install.rc != 0 or expat_lib.stat.exists == False
+
+- stat: path={{STOW_PATH}}/../lib/libexpat.so
+  register: expat_path
+  changed_when: expat_lib.stat.exists == False
+
+- name: Display expat path
+  debug: msg="{{expat_path.stat.lnk_source}}"
+  failed_when: '"{{src.expat.ver}}" not in expat_path.stat.lnk_source'
