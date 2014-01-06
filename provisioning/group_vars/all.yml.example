@@ -7,7 +7,7 @@ LOCAL_SRC_PATH: "{{LOCAL_ANSIBLE_ROOT}}/src_files"
 sysadmin:     "sysadmin" # User to install libraries & packages from source
 deployer:     "deployer" # User to deploy Rails applications from
 internal_tld: "dev"      # "com", "net", "org", "pow", etc.
-hostname:     "support.local" # domain.{{internal_tld}}, example.com, localhost, etc.
+hostname:     "{{ansible_domain}}" # domain.{{internal_tld}}, example.com, localhost, etc.
 STOW_PATH:    "{{HOME.stdout}}/opt/stow"
 SRC_PATH:     "{{HOME.stdout}}/SUPPORT/src"
 src_bash:     "source {{HOME.stdout}}/.bashrc;"
@@ -26,8 +26,8 @@ compile_flags:
     value: "{{STOW_PATH}}/../include"
     regex: "{{STOW_PATH}}/../include"
   - flag:  "LDFLAGS"
-    value: "-L{{STOW_PATH}}/../lib -R{{STOW_PATH}}/../lib"
-    regex: "-L{{STOW_PATH}}/../lib -R{{STOW_PATH}}/../lib"
+    value: "-L{{STOW_PATH}}/../lib"
+    regex: "-L{{STOW_PATH}}/../lib"
   - flag:  "LD_LIBRARY_PATH"
     value: "{{STOW_PATH}}/../lib:$LD_LIBRARY_PATH"
     regex: "{{STOW_PATH}}/../lib:.LD_LIBRARY_PATH"
