@@ -24,6 +24,11 @@
       yum: pkg={{item}} state=latest
       with_items:
         - gcc-c++
+        - perl # Needed or stow
+        - glibc-static # Needed for tmux
+        - perl-ExtUtils-MakeMaker # Needed for git
+        - perl-CPAN # Needed for git
+        - gettext # Needed for git
 ## "build-essential" not yet needed:
 ##        - autoconf
 ##        - bison
