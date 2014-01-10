@@ -9,7 +9,7 @@
 #   - A hostname/ip can be a member of multiple groups
 
 [vagrant]
-33.33.33.10
+33.33.33.10   ansible_domain='vagrant.vm'
 
 [ruby]
 33.33.33.10
