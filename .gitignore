@@ -10,3 +10,7 @@ provisioning/src_files
 .vagrant
 *.bak
 .DS_Store
+
+# Test hosts
+provisioning/hosts/centos6
+provisioning/hosts/centos5
