@@ -82,6 +82,18 @@
   tags:
     - git
 
+- name: Setup vim (after Python & Ruby)
+  vars_files:
+  - group_vars/all.yml
+  - group_vars/src.yml
+  hosts: all
+  sudo_user: "{{sysadmin}}"
+  sudo: yes
+  roles:
+    - vim
+  tags:
+    - vim
+
 #- name: Setup the DB infrastructure
 #  hosts: db
 #  sudo_user: "{{sysadmin}}"

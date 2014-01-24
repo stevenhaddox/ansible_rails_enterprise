@@ -15,7 +15,7 @@
   shell:
     "{{src_bash}}
     cd {{SRC_PATH}}/{{src_folder.stdout}};
-    ./configure --prefix={{STOW_PATH}}/{{src_folder.stdout}} --with-features=huge --enable-rubyinterp --disable-selinux;
+    ./configure --prefix={{STOW_PATH}}/{{src_folder.stdout}} --with-features=huge --enable-rubyinterp --enable-pythoninterp --disable-selinux;
     make;
     make install prefix={{STOW_PATH}}/{{src_folder.stdout}};
     cd {{STOW_PATH}};
