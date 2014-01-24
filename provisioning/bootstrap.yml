@@ -11,33 +11,37 @@
 #  roles:
 #    - role: bootstrap_redhat
   tasks:
-    - name: Install "build-essential" packages for RHEL < 6
-      when: ansible_distribution_version.split(".")[0]|int < 6
-      debug: msg="I will install essential packages for RHEL-based < 6.0"
-##      yum: pkg={{item}} state=latest
-##      with_items:
-##        - gcc-c++
-##        - gcc44-c++
-#
-    - name: Install essential packages for RHEL-based systems
-#      debug: msg="I will install essential packages for RHEL"
+    - name: Install "build-essential" packages for RHEL-based systems
       yum: pkg={{item}} state=latest
       with_items:
         - gcc-c++
+# "build-essential" not yet needed:
+#        - autoconf
+#        - bison
+#        - flex
+#        - gcc
+#        - kernel-devel
+#        - make
+#        - m4
+
+    - name: Install "build-essential" packages for RHEL < 6
+      when: ansible_distribution_version.split(".")[0]|int < 6
+      debug: msg="I will install essential packages for RHEL-based < 6.0"
+#      yum: pkg={{item}} state=latest
+#      with_items:
+#        - gcc-c++
+#        - gcc44-c++
+
+    - name: Install "build-essential" packages for RHEL > 5
+      when: ansible_distribution_version.split(".")[0]|int > 5
+      yum: pkg={{item}} state=latest
+      with_items:
         - perl # Needed or stow
         - glibc-static # Needed for tmux
         - perl-ExtUtils-MakeMaker # Needed for git
         - perl-CPAN # Needed for git
         - gettext # Needed for git
-## "build-essential" not yet needed:
-##        - autoconf
-##        - bison
-##        - flex
-##        - gcc
-##        - kernel-devel
-##        - make
-##        - m4
-#
+
 #- hosts: Debian
 ##  roles:
 ##    - role: bootstrap_debian

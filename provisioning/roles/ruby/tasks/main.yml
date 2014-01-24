@@ -11,9 +11,3 @@
 - include: rvm.yml
 - include: rvm_packages.yml
 - include: rvm_ruby.yml
-
-#######################
-# Install vim w/ Ruby #
-#######################
-
-- include: vim.yml

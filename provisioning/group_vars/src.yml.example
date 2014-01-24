@@ -146,9 +146,9 @@ src:
     ext:  "tar.gz"
   passenger:
     <<:   *defaults
-    url:  "http://s3.amazonaws.com/phusion-passenger/releases/passenger-4.0.29.tar.gz"
+    url:  "http://s3.amazonaws.com/phusion-passenger/releases/passenger-4.0.35.tar.gz"
     name: "passenger"
-    ver:  "4.0.29"
+    ver:  "4.0.35"
     ext:  "tar.gz"
   zlib:
     <<:   *defaults
