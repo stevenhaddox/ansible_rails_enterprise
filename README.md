@@ -64,3 +64,7 @@ $ vagrant provision
 # Destroy as needed and repeat from `vagrant up`:
 $ vagrant destroy
 ```
+
+
+[![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/stevenhaddox/ansible_rails_enterprise/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
+
