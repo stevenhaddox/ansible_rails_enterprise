@@ -41,8 +41,8 @@ The following files have variables with defaults you'll probably want to modify:
 
 ```bash
 $ wget http://bit.ly/SUPPORT-x64 -O
-~/.vagrant/boxes/vagrant-centos59-x86_64-SUPPORT.box
-$ cd ~/.vagrant/boxes
+~/.vagrant.d/boxes/vagrant-centos59-x86_64-SUPPORT.box
+$ cd ~/.vagrant.d/boxes
 $ mkdir vagrant-centos59-x86_64-SUPPORT
 $ tar -xzvf vagrant-centos59-x86_64-SUPPORT.box -C
 vagrant-centos59-x86_64-SUPPORT/
@@ -54,6 +54,7 @@ $ vagrant box list
 `ansible-playbook provisioning/init.yml -i provisioning/hosts/vagrant --u vagrant --sudo`
 
 ### Develop / Test the Ansible Provisioning Playbook:
+Make sure your ssh key has been added to the VMs authorized keys before attempting to provision
 
 ```bash
 # Spin-up the VM and bootstrap the server to add python-simplejson & needed packages
