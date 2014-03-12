@@ -22,6 +22,12 @@ src:
     name: "gcc"
     ver:  "4.8.2"
     ext:  "tar.bz2"
+  gettext:
+    <<:   *defaults
+    url:  "http://ftp.gnu.org/pub/gnu/gettext/gettext-0.18.3.1.tar.gz"
+    name: "gettext"
+    ver:  "0.18.3.1"
+    ext:  "tar.gz"
   git:
     <<:   *defaults
     url:  "https://git-core.googlecode.com/files/git-1.8.4.4.tar.gz"
@@ -133,9 +139,9 @@ src:
 # Node.js packages
   node:
     <<:   *defaults
-    url:  "http://nodejs.org/dist/v0.10.22/node-v0.10.22.tar.gz"
+    url:  "http://nodejs.org/dist/v0.10.26/node-v0.10.26.tar.gz"
     name: "node"
-    ver:  "v0.10.22"
+    ver:  "v0.10.26"
     ext:  "tar.gz"
 # Rails packages
   curl:

@@ -11,3 +11,4 @@
 - include: tmux.yml
 - include: openssl.yml # Because cryptography
 - include: expat.yml   # Needed for git
+- include: gettext.yml # Needed for git
