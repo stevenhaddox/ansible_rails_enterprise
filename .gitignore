@@ -14,3 +14,7 @@ provisioning/src_files
 # Test hosts
 provisioning/hosts/centos6
 provisioning/hosts/centos5
+
+# Other hosts
+provisioning/hosts/*.host
+provisioning/hosts/*.hosts

@@ -4,7 +4,8 @@ LOCAL_ANSIBLE_ROOT: "~/ansible/ansible_rails_enterprise/provisioning"
 LOCAL_SRC_PATH: "{{LOCAL_ANSIBLE_ROOT}}/src_files"
 
 # Remote Node Variables
-sysadmin:     "sysadmin" # User to install libraries & packages from source
+#sysadmin:     "sysadmin" # User to install libraries & packages from source
+sysadmin:     "deployer" # User to install libraries & packages from source
 deployer:     "deployer" # User to deploy Rails applications from
 internal_tld: "dev"      # "com", "net", "org", "pow", etc.
 hostname:     "{{ansible_domain}}" # domain.{{internal_tld}}, example.com, localhost, etc.
@@ -49,8 +50,8 @@ compile_flags:
 
 # Ruby Config
 rvm_fw:
-  enabled: True # False
-  url: "http://rvm-fw.slkdemos.com" # ""
+  enabled: True
+  url: "http://rvm-fw.slkdemos.com" # "http://your-internal-RVM-FW-path.tld"
 
 rvm:
   packages:
