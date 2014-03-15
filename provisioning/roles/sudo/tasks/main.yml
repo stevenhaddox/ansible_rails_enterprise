@@ -1,0 +1,59 @@
+---
+- name: Set user's $HOME variable
+  shell: chdir=~ pwd
+  register: HOME
+  ignore_errors: yes
+  changed_when: HOME.rc != 0
+
+#
+# Users
+#
+
+- name: Create default users
+  user: name={{item}} password={{password}}
+  with_items:
+    - "{{deployer}}"
+    - "{{sysadmin}}"
+
+#
+# authorized_keys
+#
+
+- name: Create users' .ssh folder
+  file: dest=/home/{{item}}/.ssh owner={{item}} state=directory
+  with_items:
+    - "{{deployer}}"
+    - "{{sysadmin}}"
+
+- name: Copy authorized_keys from root to new users
+  command: cp /root/.ssh/authorized_keys /home/{{item}}/.ssh/authorized_keys creates=/home/{{item}}/.ssh/authorized_key
+  with_items:
+    - "{{deployer}}"
+    - "{{sysadmin}}"
+
+- name: Set permissions on authorized_keys
+  file: path=/home/{{item}}/.ssh/authorized_keys owner={{item}} mode=0644
+  with_items:
+    - "{{deployer}}"
+    - "{{sysadmin}}"
+
+#
+# iptables
+#
+
+- name: Copy iptables script
+  template: src=firewall_rules.sh.j2 dest={{HOME.stdout}}/firewall_rules.sh mode=755
+
+- name: Install iptables (RedHat based)
+  action: yum name='iptables' state=installed
+  when: "'{{ansible_pkg_mgr}}' == 'yum'"
+
+- name: Set iptables to autostart on boot
+  command: chkconfig iptables on
+
+- name: iptables running
+  service: name=iptables state=started
+
+- name: Setup iptables
+  shell: "PATH=/sbin:${PATH} {{src_bash}} {{HOME.stdout}}/firewall_rules.sh"
+  register: iptables_script

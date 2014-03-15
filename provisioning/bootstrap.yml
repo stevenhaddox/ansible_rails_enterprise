@@ -1,6 +1,16 @@
 ---
 - hosts: all
   gather_facts: yes
+  vars_files:
+  - group_vars/all.yml
+  - group_vars/src.yml
+  vars:
+    # created with:
+    # python -c 'import crypt; print crypt.crypt("This is my Password", "$1$SomeSalt$")'
+    # password: $1$SomeSalt$UqddPX3r4kH3UL5jq5/ZI.
+    password: $1$1RmB3jQpfbq6
+  roles:
+    - sudo
   tasks:
     - group_by: key={{ansible_os_family}}
 
@@ -15,13 +25,14 @@
       yum: pkg={{item}} state=latest
       with_items:
         - gcc-c++
+        - make
+        - perl
 # "build-essential" not yet needed:
 #        - autoconf
 #        - bison
 #        - flex
 #        - gcc
 #        - kernel-devel
-#        - make
 #        - m4
 
     - name: Install "build-essential" packages for RHEL < 6

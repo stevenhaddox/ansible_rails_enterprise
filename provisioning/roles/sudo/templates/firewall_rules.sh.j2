@@ -1,0 +1,99 @@
+#!/bin/bash
+#
+# Flush all current rules from iptables
+#
+iptables -F
+
+#
+# Allow SSH connections on tcp port 22
+# This is essential when working on remote servers via SSH to prevent locking yourself out of the system
+#
+
+# 28017 - MongoDB Web UI
+
+#
+# Do -NOT- remove the following line, 22 is to SSH in
+#
+iptables -A INPUT -p tcp --dport 22 -j ACCEPT
+
+#
+# Configure services
+#
+iptables -A INPUT -p tcp --dport 80 -j ACCEPT
+iptables -A INPUT -p tcp --dport 443 -j ACCEPT
+iptables -A INPUT -p tcp --dport 3000 -j ACCEPT
+iptables -A INPUT -p tcp --dport 4567 -j ACCEPT
+iptables -A INPUT -p tcp --dport 9292 -j ACCEPT
+
+# Ping from inside to outside
+iptables -A OUTPUT -p icmp --icmp-type echo-request -j ACCEPT
+iptables -A INPUT -p icmp --icmp-type echo-reply -j ACCEPT
+
+# Ping from outside to inside
+iptables -A INPUT -p icmp --icmp-type echo-request -j ACCEPT
+iptables -A OUTPUT -p icmp --icmp-type echo-reply -j ACCEPT
+
+# Allow loopback access
+iptables -A INPUT -i lo -j ACCEPT
+iptables -A OUTPUT -o lo -j ACCEPT
+
+# Port forward 80 => 8080
+iptables -t nat -A PREROUTING -p tcp -m tcp --dport 80 -j REDIRECT --to-ports 8080
+iptables -A INPUT -i eth0 -p tcp --dport 8080 -m state --state NEW,ESTABLISHED -j ACCEPT
+iptables -A OUTPUT -o eth0 -p tcp --sport 8080 -m state --state ESTABLISHED -j ACCEPT
+
+# Port forward 443 => 8443
+iptables -t nat -A PREROUTING -p tcp -m tcp --dport 443 -j REDIRECT --to-ports 8443
+iptables -A INPUT -i eth0 -p tcp --dport 8443 -m state --state NEW,ESTABLISHED -j ACCEPT
+iptables -A OUTPUT -o eth0 -p tcp --sport 8443 -m state --state ESTABLISHED -j ACCEPT
+
+#
+# Allow email
+#
+iptables -A INPUT -p tcp --dport 25 -j ACCEPT
+iptables -A INPUT -p tcp --dport 110 -j ACCEPT
+iptables -A INPUT -p tcp --dport 143 -j ACCEPT
+iptables -A INPUT -p tcp --dport 993 -j ACCEPT
+iptables -A INPUT -p tcp --dport 995 -j ACCEPT
+iptables -A INPUT -p tcp --dport 1025 -j ACCEPT # For non-root use
+
+#
+# Set default policies for INPUT, FORWARD and OUTPUT chains
+#
+
+iptables -P INPUT DROP
+iptables -P FORWARD DROP
+iptables -P OUTPUT ACCEPT
+
+#
+# Set access for localhost
+#
+
+iptables -A INPUT -i lo -j ACCEPT
+
+#
+# Accept packets belonging to established and related connections
+#
+
+iptables -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
+
+#
+# Reject all others
+#
+
+iptables -A INPUT -j REJECT
+iptables -A FORWARD -j REJECT
+
+#
+# Save settings
+#
+
+/sbin/service iptables save
+
+#
+# List rules
+#
+
+iptables -L -v
+
+exit 0
