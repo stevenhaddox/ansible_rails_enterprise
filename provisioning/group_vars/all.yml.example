@@ -89,5 +89,4 @@ apps:
   example:
     enabled: True # False
     name:   "example"
-    domain: "localhost"
-    #domain:   "{{http.domain}}.{{internal_tld}}"
+    domain: "{{ansible_domain}}" # domain.{{internal_tld}}, example.com, localhost, etc.
