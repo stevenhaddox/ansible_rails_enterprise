@@ -13,7 +13,10 @@
   SSLCertificateKeyFile "{{httpd.https.ssl.server_key}}"
   SSLCACertificateFile  "{{httpd.paths.server_ca}}"
 
-  SSLVerifyClient require
+  # Production application probably should use "require"
+  #SSLVerifyClient require
+  # "optional_no_ca" is for testing purposes (like vagrant defaults & self-signed)
+  SSLVerifyClient optional_no_ca
   SSLVerifyDepth 4
 
   CustomLog logs/ssl-access.log combined
