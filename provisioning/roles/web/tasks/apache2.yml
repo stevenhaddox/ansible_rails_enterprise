@@ -42,6 +42,69 @@
   debug: msg="{{httpd_version.stdout}}"
   failed_when: '"{{src.httpd.ver}}" not in httpd_version.stdout'
 
+# Create certificates if they don't exist
+- name: Create certs directory
+  when: httpd.https.enabled == True
+  file: path={{httpd.https.ssl.certs_path}} state=directory mode=755
+
+- name: Create CA directory
+  when: httpd.https.enabled == True
+  file: path={{httpd.https.ssl.CA_path}} state=directory mode=755
+
+- name: Create self-signed SSL certs
+  when: httpd.https.enabled == True
+  command: "openssl req -new -nodes -x509 -subj '/C=US/ST=Maryland/L=Frederick/O=IT/CN={{ansible_fqdn}}' -days 3650 -keyout {{httpd.https.ssl.certs_path}}/{{ansible_fqdn}}.key -out {{httpd.https.ssl.certs_path}}/{{ansible_fqdn}}.crt -extensions v3_ca creates={{httpd.https.ssl.certs_path}}/{{ansible_fqdn}}.crt"
+
+- name: Symlink cert file
+  when: httpd.https.enabled == True
+  command: "ln -s {{httpd.https.ssl.certs_path}}/{{ansible_fqdn}}.crt {{httpd.https.ssl.server_crt}} creates={{httpd.https.ssl.server_crt}}"
+
+- name: Symlink cert key
+  when: httpd.https.enabled == True
+  command: "ln -s {{httpd.https.ssl.certs_path}}/{{ansible_fqdn}}.key {{httpd.https.ssl.server_key}} creates={{httpd.https.ssl.server_key}}"
+
+- name: CA bundle file
+  when: httpd.https.enabled == True
+  command: "wget http://curl.haxx.se/ca/cacert.pem -O {{httpd.https.ssl.CA_cert}} creates={{httpd.https.ssl.CA_cert}}"
+
+# SSL Configuration
+- name: Symlink server-ca.crt to CA-bundle.crt
+  when: httpd.https.enabled == True
+  file: src={{httpd.https.ssl.CA_cert}} dest={{httpd.paths.server_ca}} state=link force=yes
+
+- name: Replace SSL configuration file with populated version
+  template: src=httpd-ssl.conf.j2 dest={{httpd.paths.ssl_conf}} backup=yes
+
+- name: Enable httpd-ssl.conf
+  when: httpd.https.enabled == True
+  lineinfile: >
+    dest={{httpd.paths.httpd_conf}}
+    state=present
+    regexp='^#?Include {{httpd.paths.ssl_conf}}$'
+    line="Include {{httpd.paths.ssl_conf}}"
+#" #TODO: Remove author's hack for vim syntax sanity
+
+- name: Enable SSLEngine
+  when: httpd.https.enabled == True
+  lineinfile:
+    dest={{httpd.paths.httpd_conf}}
+    backrefs=yes
+    state=present
+    regexp='^#?LoadModule ssl_module modules/mod_ssl.so$'
+    line="LoadModule ssl_module modules/mod_ssl.so"
+#" #TODO: Remove author's hack for vim syntax sanity
+
+- name: Enable SHMCB
+  when: httpd.https.enabled == True
+  lineinfile:
+    dest={{httpd.paths.httpd_conf}}
+    backrefs=yes
+    state=present
+    regexp='^#?LoadModule socache_shmcb_module modules/mod_socache_shmcb.so$'
+    line="LoadModule socache_shmcb_module modules/mod_socache_shmcb.so"
+#" #TODO: Remove author's hack for vim syntax sanity
+
+# Default httpd & virtualhost includes
 - name: Create sites-available & sites-enabled directories
   file: path={{item}} state=directory
   with_items:
@@ -65,9 +128,3 @@
     regexp="^Include {{httpd.paths.sites_enabled}}$"
     line="Include {{httpd.paths.sites_enabled}}"
 #" #TODO: Remove author's hack for vim syntax sanity
-
-- name: Replace SSL configuration file with populated version
-  template: src=httpd-ssl.conf.j2 dest={{httpd.paths.conf}}/extra/httpd-ssl.conf backup=yes
-
-- name: Symlink server-ca.crt to CA-bundle.crt
-  file: src={{httpd.https.ssl.CA_cert}} dest={{httpd.paths.server_ca}} state=link force=yes

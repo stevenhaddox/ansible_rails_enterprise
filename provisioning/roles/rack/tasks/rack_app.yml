@@ -25,6 +25,8 @@
   when: app_path.stat.exists == False
   file: src={{apps.root}}/{{app.name}}/releases/{{time.stdout}} dest={{apps.root}}/{{app.name}}/current state=link
 
+
+# HTTP conf
 - stat: path={{httpd.paths.sites_enabled}}/{{app.name}}.conf
   register: vhost_conf
 
@@ -36,8 +38,22 @@
   when: vhost_conf.stat.exists == False
   file: src={{httpd.paths.sites_available}}/{{app.name}}.conf dest={{httpd.paths.sites_enabled}}/{{app.name}}.conf state=link
 
-- name: Restart httpd to detect new virtualhost
-  when: vhost_conf.stat.exists == False
+# HTTPS conf
+- stat: path={{httpd.paths.sites_enabled}}/{{app.name}}.ssl.conf
+  register: vhost_ssl_conf
+
+- name: Create sites-available/{{app.name}}.ssl virtualhost file
+  when: vhost_ssl_conf.stat.exists == False
+  template: src=rack_apache_ssl_template.conf.j2 dest={{httpd.paths.sites_available}}/{{app.name}}.ssl.conf
+
+- name: Create sites-enabled/{{app.name}} symlink
+  when: vhost_ssl_conf.stat.exists == False and httpd.https.enabled == True
+  file: src={{httpd.paths.sites_available}}/{{app.name}}.ssl.conf dest={{httpd.paths.sites_enabled}}/{{app.name}}.ssl.conf state=link
+
+# Restart Apache
+
+- name: Restart httpd to ensure configs work
+#  when: vhost_conf.stat.exists == False
   shell: "{{src_bash}} httpd -k restart"
 
 - name: Verify passenger renders a rack application
@@ -45,3 +61,9 @@
   register: rack_curl
   changed_when: rack_curl.rc != 0
   failed_when: rack_curl.rc != 0
+
+- name: Verify passenger renders a rack application over SSL
+  shell: curl -k https://localhost:{{httpd.https.port}} | grep 'Hello, rack!'
+  register: rack_ssl_curl
+  changed_when: rack_ssl_curl.rc != 0
+  failed_when: rack_ssl_curl.rc != 0

@@ -59,7 +59,7 @@ $ vagrant box list
 # Spin-up the VM and bootstrap the server to add python-simplejson & needed packages
 $ vagrant up --no-provision && ansible-playbook provisioning/init.yml -i provisioning/hosts/vagrant -u vagrant -s
 # Repeat the following with each `provisioning/site.yml` modification:
-$ vagrant provision
+$ ansible-playbook -i provisioning/hosts/vagrant provisioning/site.yml -u vagrant -s
 # Destroy as needed and repeat from `vagrant up`:
 $ vagrant destroy
 ```

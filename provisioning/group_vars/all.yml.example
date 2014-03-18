@@ -8,7 +8,7 @@ LOCAL_SRC_PATH: "{{LOCAL_ANSIBLE_ROOT}}/src_files"
 sysadmin:     "deployer" # User to install libraries & packages from source
 deployer:     "deployer" # User to deploy Rails applications from
 internal_tld: "dev"      # "com", "net", "org", "pow", etc.
-hostname:     "{{ansible_domain}}" # domain.{{internal_tld}}, example.com, localhost, etc.
+hostname:     "{{ansible_fqdn}}" # domain.{{internal_tld}}, example.com, localhost, etc.
 STOW_PATH:    "{{HOME.stdout}}/opt/stow"
 SRC_PATH:     "{{HOME.stdout}}/SUPPORT/src"
 src_bash:     "source {{HOME.stdout}}/.bashrc;"
@@ -89,4 +89,4 @@ apps:
   example:
     enabled: True # False
     name:   "example"
-    domain: "{{ansible_domain}}" # domain.{{internal_tld}}, example.com, localhost, etc.
+    domain: "{{ansible_fqdn}}" # domain.{{internal_tld}}, example.com, localhost, etc.

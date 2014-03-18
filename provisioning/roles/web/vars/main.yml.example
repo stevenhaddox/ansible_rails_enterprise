@@ -5,7 +5,7 @@
 
 httpd:
   port:   8080 # 80
-  domain: "{{ansible_domain}}" # "domain.tld", "example.com", "sub.domain.tld", "192.168.0.42"
+  domain: "{{ansible_fqdn}}" # "domain.tld", "example.com", "sub.domain.tld", "192.168.0.42"
   paths:
     root:            "{{STOW_PATH}}/.."
     conf:            "{{STOW_PATH}}/../conf"
@@ -19,12 +19,12 @@ httpd:
   https:
     enabled: True # False
     port: 8443    # 443
-    domain: "{{ansible_domain}}"
-    admin:  "no-reply@{{ansible_domain}}" # youremail@yourdomain.tld
+    domain: "{{ansible_fqdn}}"
+    admin:  "no-reply@{{ansible_fqdn}}" # youremail@yourdomain.tld
     document_root: "{{STOW_PATH}}/../htdocs"
     ssl:
       certs_path: "{{HOME.stdout}}/certs"
-      server_crt: "{{HOME.stdout}}/certs/{{ansible_domain}}.crt"
-      server_key: "{{HOME.stdout}}/certs/{{ansible_domain}}.key"
+      server_crt: "{{HOME.stdout}}/certs/{{ansible_fqdn}}.crt"
+      server_key: "{{HOME.stdout}}/certs/{{ansible_fqdn}}.key"
       CA_path:    "{{HOME.stdout}}/certs/CA"
-      CA_cert:    "{{HOME.stdout}}/certs/CA/ca-bundle.crt"
+      CA_cert:    "{{HOME.stdout}}/certs/CA/ca-bundle.pem"

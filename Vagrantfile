@@ -7,12 +7,12 @@ Vagrant.configure("2") do |config|
 
   config.vm.synced_folder ".", "/vagrant", disabled: true
 
-  config.vm.provision :ansible do |ansible|
+  config.vm.provision "ansible" do |ansible|
     ansible.verbose        = 'v' # vv, vvv, false
     ansible.playbook       = "provisioning/site.yml"
     ansible.inventory_path = "provisioning/hosts/vagrant"
+    ansible.raw_arguments  = "-u support"
     ansible.sudo           = true
     ansible.sudo_user      = "sysadmin"
-#    ansible.raw_arguments  = "-u support"
   end
 end
