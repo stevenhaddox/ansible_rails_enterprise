@@ -25,8 +25,25 @@
     - "{{deployer}}"
     - "{{sysadmin}}"
 
+- name: Create .ssh folder if it doesn't exist
+  file: dest=/root/.ssh owner=root state=directory
+
+- name: Check for authorized_keys file
+  stat: path=/root/.ssh/authorized_keys
+  register: authorized_keys
+
+- name: Create authorized_key file if it doesn't exist
+  when: authorized_keys.stat.exists == False
+  command: "curl https://raw.githubusercontent.com/mitchellh/vagrant/master/keys/vagrant.pub -o /root/.ssh/authorized_keys"
+
+- name: Permissions for .ssh directory
+  file: dest=/root/.ssh mode=0700
+
+- name: Permissions for authorized_keys
+  file: dest=/root/.ssh/authorized_keys mode=0600
+
 - name: Copy authorized_keys from root to new users
-  command: cp /root/.ssh/authorized_keys /home/{{item}}/.ssh/authorized_keys creates=/home/{{item}}/.ssh/authorized_key
+  command: cp /root/.ssh/authorized_keys /home/{{item}}/.ssh/authorized_keys creates=/home/{{item}}/.ssh/authorized_keys
   with_items:
     - "{{deployer}}"
     - "{{sysadmin}}"
@@ -48,12 +65,12 @@
   action: yum name='iptables' state=installed
   when: "'{{ansible_pkg_mgr}}' == 'yum'"
 
-- name: Set iptables to autostart on boot
-  command: chkconfig iptables on
-
-- name: iptables running
-  service: name=iptables state=started
-
 - name: Setup iptables
   shell: "PATH=/sbin:${PATH} {{src_bash}} {{HOME.stdout}}/firewall_rules.sh"
   register: iptables_script
+
+- name: Set iptables to autostart on boot
+  command: /sbin/chkconfig iptables on
+
+- name: iptables running
+  service: name=iptables state=started

@@ -1,0 +1,40 @@
+##
+## SSL Virtual Host Context
+##
+
+<VirtualHost *:{{httpd.https.port}}>
+  ServerName {{app.domain}}
+  DocumentRoot {{apps.root}}/{{app.name}}/current/public
+
+  SSLEngine on
+  SSLProtocol all -SSLv2
+  SSLCipherSuite !SSLv2:!NULL:!LOW:!EXP:!ADH:HIGH:TLSv1:SSLv3
+  SSLCertificateFile    "{{httpd.https.ssl.server_crt}}"
+  SSLCertificateKeyFile "{{httpd.https.ssl.server_key}}"
+  SSLCACertificateFile  "{{httpd.paths.server_ca}}"
+
+  SSLVerifyClient require
+  SSLVerifyDepth 4
+
+  CustomLog logs/ssl-access.log combined
+  ErrorLog  logs/ssl-error.log
+
+  LogLevel info
+  CustomLog "{{httpd.paths.logs}}/ssl_request_log" \
+     "%t %h %{SSL_PROTOCOL}x %{SSL_CIPHER}x \"%r\" %b"
+
+  # Enable application access of SSL DN
+  SSLOptions +StdEnvVars
+
+  # Pass client certificate info to app
+  RequestHeader append X_CLIENT_CN %{SSL_CLIENT_S_DN_CN}s
+  RequestHeader append X_CLIENT_DN %{SSL_CLIENT_S_DN}s
+  RequestHeader append X_CLIENT_CERT %{SSL_CLIENT_CERT}s
+  RequestHeader append X_SSL_CLIENT_VERIFY %{SSL_CLIENT_VERIFY}s
+
+  <Directory {{apps.root}}/{{app.name}}/current/public>
+    # MutliViews must be turned off.
+    Options -MultiViews
+    Require all granted
+  </Directory>
+</VirtualHost>
