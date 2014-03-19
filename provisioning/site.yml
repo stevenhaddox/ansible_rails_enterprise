@@ -94,8 +94,13 @@
   tags:
     - vim
 
-#- name: Setup the DB infrastructure
-#  hosts: db
-#  sudo_user: "{{sysadmin}}"
-#  roles:
-#    - db
+- name: Setup the DB infrastructure
+  vars_files:
+  - group_vars/all.yml
+  - group_vars/src.yml
+  hosts: db
+  sudo_user: "{{sysadmin}}"
+  roles:
+    - postgresql
+  tags:
+    - db

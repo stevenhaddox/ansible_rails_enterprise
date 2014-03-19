@@ -1,0 +1,32 @@
+####################
+# Install readline #
+####################
+
+# Detect readlines's presence
+- stat: path={{STOW_PATH}}/../lib/libreadline.so
+  register: readline_lib
+  changed_when: readline_lib.stat.exists == False
+
+# Upload & extract source
+- { include: upload_src.yml, package: "{{src.readline}}", pkg_check: "{{readline_lib}}" }
+
+- name: Install readline
+  when: readline_lib.stat.exists == False
+  shell:
+    "{{src_bash}}
+    cd {{SRC_PATH}}/{{src_folder.stdout}};
+    ./configure --prefix={{STOW_PATH}}/{{src_folder.stdout}};
+    make;
+    make install prefix={{STOW_PATH}}/{{src_folder.stdout}};
+    cd {{STOW_PATH}};
+    stow {{src_folder.stdout}}"
+  register: readline_install
+  changed_when: readline_install.rc != 0 or readline_lib.stat.exists == False
+
+- stat: path={{STOW_PATH}}/../lib/libreadline.so
+  register: readline_path
+  changed_when: readline_lib.stat.exists == False
+
+- name: Display readline path
+  debug: msg="{{readline_path.stat.lnk_source}}"
+  failed_when: '"{{src.readline.ver}}" not in readline_path.stat.lnk_source'
