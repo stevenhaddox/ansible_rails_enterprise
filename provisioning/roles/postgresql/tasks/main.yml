@@ -1,0 +1,6 @@
+---
+################################
+# Install vim w/ Ruby & Python #
+################################
+
+- include: postgresql.yml

@@ -72,6 +72,12 @@ src:
     name: "openssl"
     ver:  "1.0.1c"
     ext:  "tar.gz"
+  readline:
+    <<:   *defaults
+    url:  "ftp://ftp.cwru.edu/pub/bash/readline-6.3.tar.gz"
+    name: "readline"
+    ver:  "6.3"
+    ext:  "tar.gz"
   stow:
     <<:   *defaults
     url:  "http://ftp.gnu.org/gnu/stow/stow-2.2.0.tar.bz2"
@@ -83,6 +89,12 @@ src:
     url:  "http://sourceforge.net/projects/tmux/files/tmux/tmux-1.8/tmux-1.8.tar.gz"
     name: "tmux"
     ver:  "1.8"
+    ext:  "tar.gz"
+  zlib:
+    <<:   *defaults
+    url:  "http://zlib.net/zlib-1.2.8.tar.gz"
+    name: "zlib"
+    ver:  "1.2.8"
     ext:  "tar.gz"
 # Ruby integrated packages
   vim:
@@ -152,13 +164,14 @@ src:
     ext:  "tar.gz"
   passenger:
     <<:   *defaults
-    url:  "http://s3.amazonaws.com/phusion-passenger/releases/passenger-4.0.35.tar.gz"
+    url:  "http://s3.amazonaws.com/phusion-passenger/releases/passenger-4.0.40.tar.gz"
     name: "passenger"
-    ver:  "4.0.35"
+    ver:  "4.0.40"
     ext:  "tar.gz"
-  zlib:
+# Databases
+  postgresql:
     <<:   *defaults
-    url:  "http://zlib.net/zlib-1.2.8.tar.gz"
-    name: "zlib"
-    ver:  "1.2.8"
-    ext:  "tar.gz"
+    url:  "http://ftp.postgresql.org/pub/source/v9.3.3/postgresql-9.3.3.tar.bz2"
+    name: "postgresql"
+    ver:  "9.3.3"
+    ext:  "tar.bz2"

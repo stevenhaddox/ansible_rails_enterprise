@@ -83,6 +83,10 @@ ruby:
       - http://rubygems.org/
 #      - https://rubygems.org/
 
+data:
+  postgresql:
+    path: "{{HOME.stdout}}/databases/postgresql/data"
+
 # Rack Application Deployment Variables
 apps:
   root: "{{HOME.stdout}}/u"

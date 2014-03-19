@@ -25,7 +25,7 @@
     - "{{deployer}}"
     - "{{sysadmin}}"
 
-- name: Create .ssh folder if it doesn't exist
+- name: Create root .ssh folder if it doesn't exist
   file: dest=/root/.ssh owner=root state=directory
 
 - name: Check for authorized_keys file
