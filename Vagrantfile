@@ -4,8 +4,9 @@ Vagrant.configure("2") do |config|
   config.vm.box_url = "http://bit.ly/SUPPORT-x64"
 
   config.vm.network "private_network", ip: "33.33.33.10"
-
   config.vm.synced_folder ".", "/vagrant", disabled: true
+  config.vm.network "forwarded_port", guest: 80,  host: 8080
+  config.vm.network "forwarded_port", guest: 443, host: 8443
 
   config.vm.provision "ansible" do |ansible|
     ansible.verbose        = 'v' # vv, vvv, false

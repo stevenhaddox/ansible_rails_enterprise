@@ -11,7 +11,7 @@
 - { include: upload_src.yml, package: "{{src.postgresql}}", pkg_check: "{{psql_bin}}" }
 
 - name: postgresql data path
-  file: path={{data.postgresql.path}} state=directory mode=0600
+  file: path={{data.postgresql.path}} state=directory mode=0700
 
 - name: Install postgresql
   when: psql_bin.stat.exists == False
