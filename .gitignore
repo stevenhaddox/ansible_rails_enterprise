@@ -1,6 +1,7 @@
 # Configuration files
 provisioning/group_vars/all.yml
 provisioning/group_vars/src.yml
+provisioning/group_vars/sudo.yml
 provisioning/roles/web/vars/main.yml
 
 # Source file downloads

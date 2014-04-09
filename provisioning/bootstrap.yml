@@ -4,6 +4,7 @@
   vars_files:
   - group_vars/all.yml
   - group_vars/src.yml
+  - group_vars/sudo.yml
   vars:
     # created with:
     # python -c 'import crypt; print crypt.crypt("This is my Password", "$1$SomeSalt$")'
@@ -27,6 +28,7 @@
         - gcc-c++
         - make
         - perl
+        - patch
 # "build-essential" not yet needed:
 #        - autoconf
 #        - bison
@@ -52,6 +54,24 @@
         - perl-ExtUtils-MakeMaker # Needed for git
         - perl-CPAN # Needed for git
         - gettext # Needed for git
+
+
+#
+# SSMTP
+#
+
+    - name: Download EPEL5 RPM Repo
+      command: "wget http://download.fedoraproject.org/pub/epel/5/i386/epel-release-5-4.noarch.rpm -O {{HOME.stdout}}/epel-release-5-4.noarch.rpm creates={{HOME.stdout}}/epel-release-5-4.noarch.rpm"
+
+    - name: Install EPEL5 RPM
+      command: "rpm --install {{HOME.stdout}}/epel-release-5-4.noarch.rpm"
+      ignore_errors: True
+
+    - name: Install ssmtp
+      yum: pkg={{item}} state=latest
+      with_items:
+        - ssmtp
+      register: ssmtp_result
 
 #- hosts: Debian
 ##  roles:

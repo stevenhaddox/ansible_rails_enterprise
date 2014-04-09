@@ -1,0 +1,25 @@
+# Ansible generated file, DO NOT MODIFY AS THIS WILL BE OVERWRITTEN
+
+##Config file for sSMTP sendmail
+## The person who gets all mail for userids < 1000
+# Make this empty to disable rewriting.
+root={{ssmtp.root_address}}
+
+# The place where the mail goes. The actual machine name is required no
+# MX records are consulted. Commonly mailhosts are named mail.domain.com
+mailhub={{ssmtp.mailhub}}
+
+# Where will the mail seem to come from?
+rewriteDomain={{ssmtp.rewrite_domain}}
+
+UseSTARTTLS={{ssmtp.start_tls}}
+hostname={{ssmtp.hostname}}
+AuthUser={{ssmtp.username}}
+AuthPass={{ssmtp.password}}
+
+# Are users allowed to set their own From: address?
+FromLineOverride={{ssmtp.from_override}}
+
+# Required for gmail authentication, new default in 2.64-10
+UseTLS=Yes
+TLS_CA_File=/etc/pki/tls/certs/ca-bundle.crt

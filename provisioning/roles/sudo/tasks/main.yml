@@ -74,3 +74,19 @@
 
 - name: iptables running
   service: name=iptables state=started
+
+#
+# ssmtp config
+#
+
+- name: Setup ssmtp config directory
+  file: path=/etc/ssmtp state=directory mode=0600
+
+- name: Copy ssmtp config template
+  template: src=ssmtp.conf.j2 dest=/etc/ssmtp/ssmtp.conf mode=600
+
+- name: Copy ssmtp revaliases template
+  template: src=ssmtp_revaliases.conf.j2 dest=/etc/ssmtp/revaliases
+
+- name: Copy ssmtp mail.rc template
+  template: src=ssmtp_mail.rc.j2 dest=/etc/mail.rc

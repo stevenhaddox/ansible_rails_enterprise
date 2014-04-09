@@ -67,10 +67,10 @@ src:
     ext:  "tar.gz"
   openssl:
     <<:   *defaults
-    # 1.0.1e throws an error when compiling with curl
-    url:  "ftp://ftp.openssl.org/source/openssl-1.0.1c.tar.gz"
+    # 1.0.1g fixes heartbleed CVE
+    url:  "ftp://ftp.openssl.org/source/openssl-1.0.1g.tar.gz"
     name: "openssl"
-    ver:  "1.0.1c"
+    ver:  "1.0.1g"
     ext:  "tar.gz"
   readline:
     <<:   *defaults
@@ -164,9 +164,9 @@ src:
     ext:  "tar.gz"
   passenger:
     <<:   *defaults
-    url:  "http://s3.amazonaws.com/phusion-passenger/releases/passenger-4.0.40.tar.gz"
+    url:  "http://s3.amazonaws.com/phusion-passenger/releases/passenger-4.0.41.tar.gz"
     name: "passenger"
-    ver:  "4.0.40"
+    ver:  "4.0.41"
     ext:  "tar.gz"
 # Databases
   postgresql:
