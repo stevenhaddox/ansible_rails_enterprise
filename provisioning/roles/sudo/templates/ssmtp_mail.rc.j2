@@ -1,0 +1,8 @@
+# Ansible generated file, DO NOT MODIFY AS THIS WILL BE OVERWRITTEN
+
+set ask askcc append dot save crt
+ignore Received Message-Id Resent-Message-Id Status Mail-From Return-Path Via
+Delivered-To
+{% for user in ssmtp['users'] %}
+alias {{user}} {{user}}<{{ssmtp.root_address}}>
+{% endfor %}

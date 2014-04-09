@@ -1,0 +1,12 @@
+---
+# sSMTP
+ssmtp:
+  mailhub: "smtp.gmail.com:587"
+  root_address: "<your-username>@gmail.com"
+  forward_address: "<your-username>@gmail.com"
+  rewrite_domain: ""
+  start_tls: "YES"
+  hostname: "smtp.gmail.com:587"
+  username: "<your-username>@gmail.com"
+  password: ""
+  from_override: "YES"
