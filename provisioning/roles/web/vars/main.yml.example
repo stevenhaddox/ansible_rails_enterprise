@@ -26,5 +26,15 @@ httpd:
       certs_path: "{{HOME.stdout}}/certs"
       server_crt: "{{HOME.stdout}}/certs/{{ansible_fqdn}}.crt"
       server_key: "{{HOME.stdout}}/certs/{{ansible_fqdn}}.key"
+      server_pwd: "{{HOME.stdout}}/certs/{{ansible_fqdn}}.pwd"
       CA_path:    "{{HOME.stdout}}/certs/CA"
       CA_cert:    "{{HOME.stdout}}/certs/CA/ca-bundle.pem"
+      CA_roots:
+        haxx: true
+        cacert: true
+      csr:
+        country: "US"
+        state:   "Maryland"
+        city:    "Frederick"
+        office:  "IT"
+        common_name: "*.{{ansible_fqdn}}"

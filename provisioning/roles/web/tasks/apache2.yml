@@ -51,9 +51,13 @@
   when: httpd.https.enabled == True
   file: path={{httpd.https.ssl.CA_path}} state=directory mode=755
 
+- name: Touch cert password file (if it doesn't exist)
+  when: httpd.https.enabled == True
+  command: "touch {{httpd.https.ssl.server_pwd}} creates={{httpd.https.ssl.server_pwd}}"
+
 - name: Create self-signed SSL certs
   when: httpd.https.enabled == True
-  command: "openssl req -new -nodes -x509 -subj '/C=US/ST=Maryland/L=Frederick/O=IT/CN={{ansible_fqdn}}' -days 3650 -keyout {{httpd.https.ssl.certs_path}}/{{ansible_fqdn}}.key -out {{httpd.https.ssl.certs_path}}/{{ansible_fqdn}}.crt -extensions v3_ca creates={{httpd.https.ssl.certs_path}}/{{ansible_fqdn}}.crt"
+  command: "openssl req -new -nodes -x509 -subj '/C={{httpd.https.ssl.csr.country}}/ST={{httpd.https.ssl.csr.state}}/L={{httpd.https.ssl.csr.city}}/O={{httpd.https.ssl.csr.office}}/CN={{httpd.https.ssl.csr.common_name}}' -days 365 -keyout {{httpd.https.ssl.server_key}} -out {{httpd.https.ssl.server_crt}} -extensions v3_ca creates={{httpd.https.ssl.server_crt}}"
 
 - name: Symlink cert file
   when: httpd.https.enabled == True
@@ -63,11 +67,26 @@
   when: httpd.https.enabled == True
   command: "ln -s {{httpd.https.ssl.certs_path}}/{{ansible_fqdn}}.key {{httpd.https.ssl.server_key}} creates={{httpd.https.ssl.server_key}}"
 
-- name: CA bundle file
+- name: Default CA bundle file
+  when: httpd.https.enabled == True and httpd.https.ssl.CA_roots.haxx == True
+  command: "wget http://curl.haxx.se/ca/cacert.pem -O {{httpd.https.ssl.CA_path}}/ca-bundle.haxx creates={{httpd.https.ssl.CA_path}}/ca-bundle.haxx"
+
+- name: CACert CA bundle file
+  when: httpd.https.enabled == True and httpd.https.ssl.CA_roots.cacert == True
+  command: "wget http://www.cacert.org/certs/root.txt -O {{httpd.https.ssl.CA_path}}/ca-bundle.cacert creates={{httpd.https.ssl.CA_path}}/ca-bundle.cacert"
+
+- name: Merge CA Bundle files
   when: httpd.https.enabled == True
-  command: "wget http://curl.haxx.se/ca/cacert.pem -O {{httpd.https.ssl.CA_cert}} creates={{httpd.https.ssl.CA_cert}}"
+  shell: "cat {{httpd.https.ssl.CA_path}}/ca-bundle.* >> {{httpd.https.ssl.CA_cert}} creates={{httpd.https.ssl.CA_cert}}"
+
+- name: Symlink CA bundle to OpenSSL config location
+  when: httpd.https.enabled == True
+  command: "ln -s {{httpd.https.ssl.CA_cert}} {{STOW_PATH}}/../ssl/cacert.pem creates={{STOW_PATH}}/../ssl/cacert.pem"
 
 # SSL Configuration
+- name: Create passphrase echo script
+  template: src=passphrase.sh.j2 dest={{httpd.https.ssl.certs_path}}/passphrase.sh mode=500
+
 - name: Symlink server-ca.crt to CA-bundle.crt
   when: httpd.https.enabled == True
   file: src={{httpd.https.ssl.CA_cert}} dest={{httpd.paths.server_ca}} state=link force=yes
