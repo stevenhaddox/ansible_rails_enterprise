@@ -67,7 +67,8 @@ SSLCipherSuite HIGH:MEDIUM:!aNULL:!MD5
 #   Configure the pass phrase gathering process.
 #   The filtering dialog program (`builtin' is an internal
 #   terminal dialog) has to provide the pass phrase on stdout.
-SSLPassPhraseDialog  builtin
+#SSLPassPhraseDialog  builtin
+SSLPassPhraseDialog exec:{{HOME.stdout}}/certs/passphrase.sh
 
 #   Inter-Process Session Cache:
 #   Configure the SSL Session Cache: First the mechanism
