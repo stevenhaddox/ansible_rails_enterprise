@@ -3,10 +3,14 @@
 LOCAL_ANSIBLE_ROOT: "~/ansible/ansible_rails_enterprise/provisioning"
 LOCAL_SRC_PATH: "{{LOCAL_ANSIBLE_ROOT}}/src_files"
 
+
 # Remote Node Variables
+# root_user is only needed for init.yml playbook (e.g., optional)
+root_user:    "root"     # ec2-user, or any user with sudo access
+
 #sysadmin:     "sysadmin" # User to install libraries & packages from source
-sysadmin:     "deployer" # User to install libraries & packages from source
-deployer:     "deployer" # User to deploy Rails applications from
+sysadmin:     "sysadmin" # User to install libraries & packages from source
+deployer:     "sysadmin" # User to deploy Rails applications from
 internal_tld: "dev"      # "com", "net", "org", "pow", etc.
 hostname:     "{{ansible_fqdn}}" # domain.{{internal_tld}}, example.com, localhost, etc.
 STOW_PATH:    "{{HOME.stdout}}/opt/stow"
@@ -69,7 +73,7 @@ rvm:
       creates: "{{HOME.stdout}}/.rvm/usr/lib/libxslt.so"
     - pkg: ncurses --verify-downloads 1
       creates: "{{HOME.stdout}}/.rvm/usr/lib/libncurses.so"
-    - pkg: openssl
+    - pkg: openssl --verify-downloads 1
       creates: "{{HOME.stdout}}/.rvm/usr/bin/openssl"
 
 ruby:

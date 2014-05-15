@@ -11,6 +11,7 @@
 
 - name: Create default users
   user: name={{item}} password={{password}}
+  sudo: yes
   with_items:
     - "{{deployer}}"
     - "{{sysadmin}}"
@@ -21,35 +22,43 @@
 
 - name: Create users' .ssh folder
   file: dest=/home/{{item}}/.ssh owner={{item}} state=directory
+  sudo: yes
   with_items:
     - "{{deployer}}"
     - "{{sysadmin}}"
 
 - name: Create root .ssh folder if it doesn't exist
   file: dest=/root/.ssh owner=root state=directory
+  sudo: yes
 
 - name: Check for authorized_keys file
   stat: path=/root/.ssh/authorized_keys
   register: authorized_keys
+  sudo: yes
 
 - name: Create authorized_key file if it doesn't exist
   when: authorized_keys.stat.exists == False
   command: "curl https://raw.githubusercontent.com/mitchellh/vagrant/master/keys/vagrant.pub -o /root/.ssh/authorized_keys"
+  sudo: yes
 
 - name: Permissions for .ssh directory
   file: dest=/root/.ssh mode=0700
+  sudo: yes
 
 - name: Permissions for authorized_keys
   file: dest=/root/.ssh/authorized_keys mode=0600
+  sudo: yes
 
 - name: Copy authorized_keys from root to new users
   command: cp /root/.ssh/authorized_keys /home/{{item}}/.ssh/authorized_keys creates=/home/{{item}}/.ssh/authorized_keys
+  sudo: yes
   with_items:
     - "{{deployer}}"
     - "{{sysadmin}}"
 
 - name: Set permissions on authorized_keys
   file: path=/home/{{item}}/.ssh/authorized_keys owner={{item}} mode=0644
+  sudo: yes
   with_items:
     - "{{deployer}}"
     - "{{sysadmin}}"
@@ -64,16 +73,20 @@
 - name: Install iptables (RedHat based)
   action: yum name='iptables' state=installed
   when: "'{{ansible_pkg_mgr}}' == 'yum'"
+  sudo: yes
 
 - name: Setup iptables
   shell: "PATH=/sbin:${PATH} {{src_bash}} {{HOME.stdout}}/firewall_rules.sh"
   register: iptables_script
+  sudo: yes
 
 - name: Set iptables to autostart on boot
   command: /sbin/chkconfig iptables on
+  sudo: yes
 
 - name: iptables running
   service: name=iptables state=started
+  sudo: yes
 
 #
 # ssmtp config
@@ -81,12 +94,16 @@
 
 - name: Setup ssmtp config directory
   file: path=/etc/ssmtp state=directory mode=0600
+  sudo: yes
 
 - name: Copy ssmtp config template
   template: src=ssmtp.conf.j2 dest=/etc/ssmtp/ssmtp.conf mode=600
+  sudo: yes
 
 - name: Copy ssmtp revaliases template
   template: src=ssmtp_revaliases.conf.j2 dest=/etc/ssmtp/revaliases
+  sudo: yes
 
 - name: Copy ssmtp mail.rc template
   template: src=ssmtp_mail.rc.j2 dest=/etc/mail.rc
+  sudo: yes
