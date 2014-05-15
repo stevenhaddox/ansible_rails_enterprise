@@ -39,7 +39,7 @@
 
 - name: Install Bundler
   when: bundler_test|failed
-  shell: bash -l -c "gem install bundler" creates={{HOME.stdout}}/.rvm/bin/bundle
+  shell: bash -l -c "gem install bundler"
   register: bundler_installed
   changed_when: bundler_installed.rc != 0
   ignore_errors: true

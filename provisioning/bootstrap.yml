@@ -24,6 +24,7 @@
   tasks:
     - name: Install "build-essential" packages for RHEL-based systems
       yum: pkg={{item}} state=latest
+      sudo: yes
       with_items:
         - gcc-c++
         - make
@@ -40,6 +41,7 @@
     - name: Install "build-essential" packages for RHEL < 6
       when: ansible_distribution_version.split(".")[0]|int < 6
       debug: msg="I will install essential packages for RHEL-based < 6.0"
+      sudo: yes
 #      yum: pkg={{item}} state=latest
 #      with_items:
 #        - gcc-c++
@@ -48,6 +50,7 @@
     - name: Install "build-essential" packages for RHEL > 5
       when: ansible_distribution_version.split(".")[0]|int > 5
       yum: pkg={{item}} state=latest
+      sudo: yes
       with_items:
         - perl # Needed or stow
         - glibc-static # Needed for tmux
@@ -65,10 +68,12 @@
 
     - name: Install EPEL5 RPM
       command: "rpm --install {{HOME.stdout}}/epel-release-5-4.noarch.rpm"
+      sudo: yes
       ignore_errors: True
 
     - name: Install ssmtp
       yum: pkg={{item}} state=latest
+      sudo: yes
       with_items:
         - ssmtp
       register: ssmtp_result
