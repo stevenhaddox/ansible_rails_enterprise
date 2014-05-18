@@ -1,9 +1,18 @@
-#SUPPORT Generated .bashrc
+# ansible_rails_enterprise SUPPORT Generated .bashrc
 
 # Source global definitions
 if [ -f /etc/bashrc ]; then
-  . /etc/bashrc
+  source /etc/bashrc
+fi
+
+#SUPPORT ENV Variables, DO NOT DELETE!
+if [ -f {{HOME.stdout}}/.bash_support ]; then
+  source {{HOME.stdout}}/.bash_support
 fi
 
 # User specific aliases and functions
 
+# Lastly, source .bash_local if present
+if [ -f {{HOME.stdout}}/.bash_local ]; then
+  source {{HOME.stdout}}/.bash_local
+fi

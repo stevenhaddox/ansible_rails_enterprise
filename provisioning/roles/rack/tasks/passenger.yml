@@ -16,7 +16,7 @@
 # Define Apache Environment Variables
 - name: Ensure $HTTPD is defined
   lineinfile:
-    dest={{HOME.stdout}}/.bashrc
+    dest={{HOME.stdout}}/.bash_support
     regexp="^export HTTPD={{httpd.paths.root}}/bin/httpd$"
     line="export HTTPD={{httpd.paths.root}}/bin/httpd"
     state=present
@@ -25,7 +25,7 @@
 
 - name: Ensure $APXS2 is defined
   lineinfile:
-    dest={{HOME.stdout}}/.bashrc
+    dest={{HOME.stdout}}/.bash_support
     regexp="^export APXS2={{httpd.paths.root}}/bin/apxs$"
     line="export APXS2={{httpd.paths.root}}/bin/apxs"
     state=present

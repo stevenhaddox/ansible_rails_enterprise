@@ -10,7 +10,7 @@
 
 - name: Document STOW Vars
   lineinfile:
-    dest={{HOME.stdout}}/.bashrc
+    dest={{HOME.stdout}}/.bash_support
     state=present
     insertafter=EOF
     create=True
@@ -19,7 +19,7 @@
 
 - name: Ensure $SRC is defined
   lineinfile:
-    dest={{HOME.stdout}}/.bashrc
+    dest={{HOME.stdout}}/.bash_support
     regexp="^export SRC={{SRC_PATH}}$"
     line="export SRC={{SRC_PATH}}"
     state=present
@@ -28,7 +28,7 @@
 
 - name: Ensure $STOW is defined
   lineinfile:
-    dest={{HOME.stdout}}/.bashrc
+    dest={{HOME.stdout}}/.bash_support
     regexp="^export STOW={{STOW_PATH}}$"
     line="export STOW={{STOW_PATH}}"
     state=present
@@ -37,7 +37,7 @@
 
 - name: Ensure stow's bin has precedence over $PATH
   lineinfile:
-    dest={{HOME.stdout}}/.bashrc
+    dest={{HOME.stdout}}/.bash_support
     regexp="^export PATH=.*STOW.*:.*PATH"
     line="export PATH=${STOW}/../bin:${PATH}"
     state=present
